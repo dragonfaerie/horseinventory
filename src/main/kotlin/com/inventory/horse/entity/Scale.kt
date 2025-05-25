@@ -8,13 +8,12 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @Entity
-@Table(name="scales")
+@Table(name = "scales")
 data class Scale(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-
     @Column(nullable = false, unique = true)
-    val name: String
+    val name: String,
 ) {
     constructor() : this(0, "")
 }

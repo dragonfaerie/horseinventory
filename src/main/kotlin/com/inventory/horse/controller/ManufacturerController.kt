@@ -14,22 +14,25 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/manufacturers")
 class ManufacturerController(
-    private val repo: ManufacturerRepository
+    private val repo: ManufacturerRepository,
 ) {
     @GetMapping("/")
     fun getAll(): List<Manufacturer> = repo.findAll()
 
     @PostMapping
-    fun create(@RequestBody manufacturer: Manufacturer): Manufacturer =
-        repo.save(manufacturer)
+    fun create(
+        @RequestBody manufacturer: Manufacturer,
+    ): Manufacturer = repo.save(manufacturer)
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @RequestBody updated: Manufacturer
+        @RequestBody updated: Manufacturer,
     ): ResponseEntity<Manufacturer> =
-        repo.findById(id).map {
-            val newOne = updated.copy(id = id)
-            ResponseEntity.ok(repo.save(newOne))
-        }.orElse(ResponseEntity.notFound().build())
+        repo
+            .findById(id)
+            .map {
+                val newOne = updated.copy(id = id)
+                ResponseEntity.ok(repo.save(newOne))
+            }.orElse(ResponseEntity.notFound().build())
 }

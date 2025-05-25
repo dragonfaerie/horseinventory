@@ -14,13 +14,11 @@ import jakarta.persistence.Table
 data class Mold(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-
     @Column(nullable = false, unique = true)
     val name: String,
-
     @ManyToOne
     @JoinColumn(name = "make_id", nullable = false)
-    val make: Manufacturer
+    val make: Manufacturer,
 ) {
     constructor() : this(0, "", Manufacturer())
 }

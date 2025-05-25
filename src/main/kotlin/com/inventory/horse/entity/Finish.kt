@@ -12,9 +12,8 @@ import jakarta.persistence.Table
 data class Finish(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-
     @Column(nullable = false, unique = true)
-    val name: String
+    val name: String,
 ) {
     constructor() : this(0, "")
 }
