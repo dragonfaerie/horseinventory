@@ -1,9 +1,7 @@
-----------
--- Read Me
--- No really, read me
-----------
+# Read Me
+## No really, read me
 
-Tech Used:
+### Tech Used:
 * Kotlin
 * Springboot
 * JPA
