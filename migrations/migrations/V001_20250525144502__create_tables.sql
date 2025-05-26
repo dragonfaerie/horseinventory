@@ -25,15 +25,15 @@
 --    UNIQUE(name, manufacturer_id)
 --);
 
-CREATE TABLE models (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    mold_id INTEGER REFERENCES molds(id) ON DELETE SET NULL,
-    run_type_id INTEGER REFERENCES run_types(id),
-    finish_id INTEGER REFERENCES finishes(id),
-    scale_id INTEGER REFERENCES scales(id),
-    UNIQUE(name, mold_id)
-);
+--CREATE TABLE models (
+--    id SERIAL PRIMARY KEY,
+--    name TEXT NOT NULL,
+--    mold_id INTEGER REFERENCES molds(id) ON DELETE SET NULL,
+--    run_type_id INTEGER REFERENCES run_types(id),
+--    finish_id INTEGER REFERENCES finishes(id),
+--    scale_id INTEGER REFERENCES scales(id),
+--    UNIQUE(name, mold_id)
+--);
 
 --CREATE TABLE breeds (
 --    id SERIAL PRIMARY KEY,
@@ -70,17 +70,17 @@ CREATE TABLE models (
 --    name TEXT UNIQUE NOT NULL
 --);
 
-CREATE TABLE tracking (
-    id SERIAL PRIMARY KEY,
-    purchase_price NUMERIC(8, 2),
-    sell_price NUMERIC(8, 2),
-    nan_qualified BOOLEAN,
-    first_place INTEGER,
-    second_place INTEGER,
-    third_place INTEGER,
-    fourth_place INTEGER,
-    fifth_place INTEGER
-);
+--CREATE TABLE tracking (
+--    id SERIAL PRIMARY KEY,
+--    purchase_price NUMERIC(8, 2),
+--    sell_price NUMERIC(8, 2),
+--    nan_qualified BOOLEAN,
+--    first_place INTEGER,
+--    second_place INTEGER,
+--    third_place INTEGER,
+--    fourth_place INTEGER,
+--    fifth_place INTEGER
+--);
 
 CREATE TABLE horses (
     id SERIAL PRIMARY KEY,
