@@ -1,7 +1,7 @@
 package com.inventory.horse.controller
 
 import com.inventory.horse.entity.Mold
-import com.inventory.horse.entity.MoldRequest
+import com.inventory.horse.entity.requests.MoldRequest
 import com.inventory.horse.repository.ManufacturerRepository
 import com.inventory.horse.repository.MoldRepository
 import org.springframework.http.ResponseEntity

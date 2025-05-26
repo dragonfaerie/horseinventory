@@ -1,4 +1,4 @@
-package com.inventory.horse.entity
+package com.inventory.horse.entity.requests
 
 data class MoldRequest(
     val name: String,

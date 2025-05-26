@@ -65,10 +65,10 @@ CREATE TABLE models (
 --    name TEXT UNIQUE NOT NULL
 --);
 
-CREATE TABLE locations (
-    id SERIAL PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL
-);
+--CREATE TABLE locations (
+--    id SERIAL PRIMARY KEY,
+--    name TEXT UNIQUE NOT NULL
+--);
 
 CREATE TABLE tracking (
     id SERIAL PRIMARY KEY,
