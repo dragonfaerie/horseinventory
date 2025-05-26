@@ -17,15 +17,19 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/molds")
 class MoldController(
     private val repo: MoldRepository,
-    private val manufacturerRepository: ManufacturerRepository
+    private val manufacturerRepository: ManufacturerRepository,
 ) {
     @GetMapping("/")
     fun getAll(): List<Mold> = repo.findAll()
 
     @PostMapping
-    fun createMold(@RequestBody request: MoldRequest): ResponseEntity<Mold> {
-        val manufacturer = manufacturerRepository.findById(request.manufacturerId)
-            .orElseThrow { RuntimeException("Manufacturer not found") }
+    fun createMold(
+        @RequestBody request: MoldRequest,
+    ): ResponseEntity<Mold> {
+        val manufacturer =
+            manufacturerRepository
+                .findById(request.manufacturerId)
+                .orElseThrow { RuntimeException("Manufacturer not found") }
 
         val mold = Mold(name = request.name, manufacturer = manufacturer)
         return ResponseEntity.ok(repo.save(mold))

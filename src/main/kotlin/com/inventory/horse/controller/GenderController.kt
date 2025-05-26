@@ -1,7 +1,7 @@
 package com.inventory.horse.controller
 
-import com.inventory.horse.entity.Breed
-import com.inventory.horse.repository.BreedRepository
+import com.inventory.horse.entity.Gender
+import com.inventory.horse.repository.GenderRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -12,23 +12,23 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/breeds")
-class BreedController(
-    private val repo: BreedRepository,
+@RequestMapping("/api/genders")
+class GenderController(
+    private val repo: GenderRepository,
 ) {
     @GetMapping("/")
-    fun getAll(): List<Breed> = repo.findAll()
+    fun getAll(): List<Gender> = repo.findAll()
 
     @PostMapping
     fun create(
-        @RequestBody breed: Breed,
-    ): Breed = repo.save(breed)
+        @RequestBody gender: Gender,
+    ): Gender = repo.save(gender)
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @RequestBody updated: Breed,
-    ): ResponseEntity<Breed> =
+        @RequestBody updated: Gender,
+    ): ResponseEntity<Gender> =
         repo
             .findById(id)
             .map {

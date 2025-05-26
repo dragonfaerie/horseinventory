@@ -1,7 +1,7 @@
 package com.inventory.horse.controller
 
-import com.inventory.horse.entity.Breed
-import com.inventory.horse.repository.BreedRepository
+import com.inventory.horse.entity.Condition
+import com.inventory.horse.repository.ConditionRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -12,23 +12,23 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/breeds")
-class BreedController(
-    private val repo: BreedRepository,
+@RequestMapping("/api/conditions")
+class ConditionController(
+    private val repo: ConditionRepository,
 ) {
     @GetMapping("/")
-    fun getAll(): List<Breed> = repo.findAll()
+    fun getAll(): List<Condition> = repo.findAll()
 
     @PostMapping
     fun create(
-        @RequestBody breed: Breed,
-    ): Breed = repo.save(breed)
+        @RequestBody condition: Condition,
+    ): Condition = repo.save(condition)
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @RequestBody updated: Breed,
-    ): ResponseEntity<Breed> =
+        @RequestBody updated: Condition,
+    ): ResponseEntity<Condition> =
         repo
             .findById(id)
             .map {

@@ -1,11 +1,7 @@
 package com.inventory.horse.controller
 
-import com.inventory.horse.entity.Breed
 import com.inventory.horse.entity.BreedType
-import com.inventory.horse.entity.Finish
-import com.inventory.horse.repository.BreedRepository
 import com.inventory.horse.repository.BreedTypeRepository
-import com.inventory.horse.repository.FinishRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

@@ -50,20 +50,20 @@ CREATE TABLE models (
 --    name TEXT UNIQUE NOT NULL
 --);
 
-CREATE TABLE patterns (
-    id SERIAL PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL
-);
+--CREATE TABLE patterns (
+--    id SERIAL PRIMARY KEY,
+--    name TEXT UNIQUE NOT NULL
+--);
 
-CREATE TABLE genders (
-    id SERIAL PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL
-);
+--CREATE TABLE genders (
+--    id SERIAL PRIMARY KEY,
+--    name TEXT UNIQUE NOT NULL
+--);
 
-CREATE TABLE conditions (
-    id SERIAL PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL
-);
+--CREATE TABLE conditions (
+--    id SERIAL PRIMARY KEY,
+--    name TEXT UNIQUE NOT NULL
+--);
 
 CREATE TABLE locations (
     id SERIAL PRIMARY KEY,
