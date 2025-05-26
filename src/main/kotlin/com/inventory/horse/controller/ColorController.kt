@@ -1,9 +1,11 @@
 package com.inventory.horse.controller
 
-import com.inventory.horse.entity.Mold
-import com.inventory.horse.entity.MoldRequest
-import com.inventory.horse.repository.ManufacturerRepository
-import com.inventory.horse.repository.MoldRepository
+import com.inventory.horse.entity.Breed
+import com.inventory.horse.entity.Color
+import com.inventory.horse.entity.Finish
+import com.inventory.horse.repository.BreedRepository
+import com.inventory.horse.repository.ColorRepository
+import com.inventory.horse.repository.FinishRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,28 +16,23 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/molds")
-class MoldController(
-    private val repo: MoldRepository,
-    private val manufacturerRepository: ManufacturerRepository
+@RequestMapping("/api/colors")
+class ColorController(
+    private val repo: ColorRepository,
 ) {
     @GetMapping("/")
-    fun getAll(): List<Mold> = repo.findAll()
+    fun getAll(): List<Color> = repo.findAll()
 
     @PostMapping
-    fun createMold(@RequestBody request: MoldRequest): ResponseEntity<Mold> {
-        val manufacturer = manufacturerRepository.findById(request.manufacturerId)
-            .orElseThrow { RuntimeException("Manufacturer not found") }
-
-        val mold = Mold(name = request.name, manufacturer = manufacturer)
-        return ResponseEntity.ok(repo.save(mold))
-    }
+    fun create(
+        @RequestBody color: Color,
+    ): Color = repo.save(color)
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @RequestBody updated: Mold,
-    ): ResponseEntity<Mold> =
+        @RequestBody updated: Color,
+    ): ResponseEntity<Color> =
         repo
             .findById(id)
             .map {

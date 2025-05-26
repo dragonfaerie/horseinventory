@@ -1,9 +1,11 @@
 package com.inventory.horse.controller
 
-import com.inventory.horse.entity.Mold
-import com.inventory.horse.entity.MoldRequest
-import com.inventory.horse.repository.ManufacturerRepository
-import com.inventory.horse.repository.MoldRepository
+import com.inventory.horse.entity.Breed
+import com.inventory.horse.entity.BreedType
+import com.inventory.horse.entity.Finish
+import com.inventory.horse.repository.BreedRepository
+import com.inventory.horse.repository.BreedTypeRepository
+import com.inventory.horse.repository.FinishRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,28 +16,23 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/molds")
-class MoldController(
-    private val repo: MoldRepository,
-    private val manufacturerRepository: ManufacturerRepository
+@RequestMapping("/api/breed-types")
+class BreedTypeController(
+    private val repo: BreedTypeRepository,
 ) {
     @GetMapping("/")
-    fun getAll(): List<Mold> = repo.findAll()
+    fun getAll(): List<BreedType> = repo.findAll()
 
     @PostMapping
-    fun createMold(@RequestBody request: MoldRequest): ResponseEntity<Mold> {
-        val manufacturer = manufacturerRepository.findById(request.manufacturerId)
-            .orElseThrow { RuntimeException("Manufacturer not found") }
-
-        val mold = Mold(name = request.name, manufacturer = manufacturer)
-        return ResponseEntity.ok(repo.save(mold))
-    }
+    fun create(
+        @RequestBody breedType: BreedType,
+    ): BreedType = repo.save(breedType)
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @RequestBody updated: Mold,
-    ): ResponseEntity<Mold> =
+        @RequestBody updated: BreedType,
+    ): ResponseEntity<BreedType> =
         repo
             .findById(id)
             .map {

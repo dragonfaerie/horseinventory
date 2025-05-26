@@ -8,7 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "run_type")
+@Table(name = "run_types")
 data class RunType(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,

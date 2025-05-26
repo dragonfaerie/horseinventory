@@ -17,8 +17,8 @@ data class Mold(
     @Column(nullable = false, unique = true)
     val name: String,
     @ManyToOne
-    @JoinColumn(name = "make_id", nullable = false)
-    val make: Manufacturer,
+    @JoinColumn(name = "manufacturer_id", nullable = false)
+    val manufacturer: Manufacturer,
 ) {
     constructor() : this(0, "", Manufacturer())
 }
