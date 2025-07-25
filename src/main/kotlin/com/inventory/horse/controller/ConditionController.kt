@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class ConditionController(
     private val repo: ConditionRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Condition> = repo.findAll()
 
     @PostMapping

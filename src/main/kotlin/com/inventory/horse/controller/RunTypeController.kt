@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class RunTypeController(
     private val repo: RunTypeRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<RunType> = repo.findAll()
 
     @PostMapping

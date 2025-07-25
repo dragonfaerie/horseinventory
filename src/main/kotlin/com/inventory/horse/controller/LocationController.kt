@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class LocationController(
     private val repo: LocationRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Location> = repo.findAll()
 
     @PostMapping

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class TrackingController(
     private val repo: TrackingRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Tracking> = repo.findAll()
 
     @PostMapping

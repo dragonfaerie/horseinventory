@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class FinishController(
     private val repo: FinishRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Finish> = repo.findAll()
 
     @PostMapping

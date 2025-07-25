@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class BreedTypeController(
     private val repo: BreedTypeRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<BreedType> = repo.findAll()
 
     @PostMapping

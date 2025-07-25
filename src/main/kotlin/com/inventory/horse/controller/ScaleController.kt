@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class ScaleController(
     private val repo: ScaleRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Scale> = repo.findAll()
 
     @PostMapping

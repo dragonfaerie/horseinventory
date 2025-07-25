@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class GenderController(
     private val repo: GenderRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Gender> = repo.findAll()
 
     @PostMapping

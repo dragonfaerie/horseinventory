@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HorseList from './components/Horselist';
+import AdminDashboard from './components/AdminDashboard';
+import ManageManufacturers from './components/ManageManufacturers'
 
 const Home: React.FC = () => (
   <div>
@@ -18,6 +20,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/horses" element={<HorseList />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/manufacturers" element={<ManageManufacturers />} />
         </Routes>
       </div>
     </Router>

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class ManufacturerController(
     private val repo: ManufacturerRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Manufacturer> = repo.findAll()
 
     @PostMapping

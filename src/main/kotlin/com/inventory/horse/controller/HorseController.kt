@@ -41,7 +41,7 @@ class HorseController(
     private val locationRepository: LocationRepository,
     private val trackingRepository: TrackingRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Horse> = repo.findAll()
 
     @PostMapping

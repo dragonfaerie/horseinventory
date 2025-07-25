@@ -19,7 +19,7 @@ class MoldController(
     private val repo: MoldRepository,
     private val manufacturerRepository: ManufacturerRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Mold> = repo.findAll()
 
     @PostMapping

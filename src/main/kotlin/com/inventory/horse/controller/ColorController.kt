@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class ColorController(
     private val repo: ColorRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Color> = repo.findAll()
 
     @PostMapping

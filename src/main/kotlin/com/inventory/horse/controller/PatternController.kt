@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class PatternController(
     private val repo: PatternRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Pattern> = repo.findAll()
 
     @PostMapping

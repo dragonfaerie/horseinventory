@@ -25,7 +25,7 @@ class ModelController(
     private val finishRepository: FinishRepository,
     private val scaleRepository: ScaleRepository,
 ) {
-    @GetMapping("/")
+    @GetMapping
     fun getAll(): List<Model> = repo.findAll()
 
     @PostMapping
