@@ -6,11 +6,28 @@ const AdminDashboard: React.FC = () => {
     <div>
       <h2>Admin Dashboard</h2>
       <ul>
+          <li>
+            <Link to="/admin/breeds">Manage Breeds</Link>
+          </li>
+          <li>
+            <Link to="/admin/breed-types">Manage Breed Types</Link>
+          </li>
+        <li>
+        <Link to="/admin/colors">Manage Colors</Link>
+        </li>
+          <li>
+            <Link to="/admin/conditions">Manage Conditions</Link>
+          </li>
         <li>
           <Link to="/admin/manufacturers">Manage Manufacturers</Link>
+        </li>
+        <li>
           <Link to="/admin/molds">Manage Molds</Link>
         </li>
-        {/* Add similar links here for RunType, Finish, etc. */}
+
+
+
+
       </ul>
     </div>
   );
