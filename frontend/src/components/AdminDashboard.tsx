@@ -8,6 +8,7 @@ const AdminDashboard: React.FC = () => {
       <ul>
         <li>
           <Link to="/admin/manufacturers">Manage Manufacturers</Link>
+          <Link to="/admin/molds">Manage Molds</Link>
         </li>
         {/* Add similar links here for RunType, Finish, etc. */}
       </ul>

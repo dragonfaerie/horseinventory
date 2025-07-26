@@ -26,6 +26,8 @@ class MoldController(
     fun createMold(
         @RequestBody request: MoldRequest,
     ): ResponseEntity<Mold> {
+        println("Requested manuvacturer ID: ${request.manufacturerId}")
+
         val manufacturer =
             manufacturerRepository
                 .findById(request.manufacturerId)
