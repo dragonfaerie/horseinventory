@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 interface Manufacturer {
   id: number;
@@ -15,38 +15,42 @@ interface Mold {
 const ManageMolds: React.FC = () => {
   const [molds, setMolds] = useState<Mold[]>([]);
   const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
-  const [addName, setAddName] = useState('');
-  const [addManufacturerId, setAddManufacturerId] = useState<number | ''>('');
+  const [addName, setAddName] = useState("");
+  const [addManufacturerId, setAddManufacturerId] = useState<number | "">("");
   const [selected, setSelected] = useState<Mold | null>(null);
-  const [editName, setEditName] = useState('');
-  const [editManufacturerId, setEditManufacturerId] = useState<number | ''>('');
+  const [editName, setEditName] = useState("");
+  const [editManufacturerId, setEditManufacturerId] = useState<number | "">("");
 
   useEffect(() => {
-    axios.get('/api/molds').then((res) => setMolds(res.data));
-  axios.get('/api/manufacturers').then((res) => {
-    console.log('Loaded manufacturers:', res.data); // 👈 ADD THIS
-    setManufacturers(res.data);
-  });
+    axios.get("/api/molds").then((res) => setMolds(res.data));
+    axios.get("/api/manufacturers").then((res) => {
+      console.log("Loaded manufacturers:", res.data); // 👈 ADD THIS
+      setManufacturers(res.data);
+    });
   }, []);
 
-const handleAdd = async () => {
-  if (!addName.trim() || !addManufacturerId || typeof addManufacturerId !== 'number') {
-    alert('Please provide both a name and manufacturer.');
-    return;
-  }
+  const handleAdd = async () => {
+    if (
+      !addName.trim() ||
+      !addManufacturerId ||
+      typeof addManufacturerId !== "number"
+    ) {
+      alert("Please provide both a name and manufacturer.");
+      return;
+    }
 
-  try {
-    const res = await axios.post<Mold>('/api/molds', {
-      name: addName.trim(),
-      manufacturerId: addManufacturerId,
-    });
-    setMolds([...molds, res.data]);
-    setAddName('');
-    setAddManufacturerId('');
-  } catch {
-    alert('Failed to add mold');
-  }
-};
+    try {
+      const res = await axios.post<Mold>("/api/molds", {
+        name: addName.trim(),
+        manufacturerId: addManufacturerId,
+      });
+      setMolds([...molds, res.data]);
+      setAddName("");
+      setAddManufacturerId("");
+    } catch {
+      alert("Failed to add mold");
+    }
+  };
 
   const handleSelect = (mold: Mold) => {
     setSelected(mold);
@@ -54,24 +58,23 @@ const handleAdd = async () => {
     setEditManufacturerId(mold.manufacturer.id);
   };
 
-const handleUpdate = async () => {
-  if (!selected || !editManufacturerId) return;
-  try {
-    const res = await axios.put<Mold>(`/api/molds/${selected.id}`, {
-      name: editName,
-      manufacturerId: editManufacturerId,
-    });
-    setMolds((prev) =>
-      prev.map((m) => (m.id === res.data.id ? res.data : m))
-    );
-    setSelected(null);
-    setEditName('');
-    setEditManufacturerId('');
-  } catch {
-    alert('Failed to update mold');
-  }
-};
-
+  const handleUpdate = async () => {
+    if (!selected || !editManufacturerId) return;
+    try {
+      const res = await axios.put<Mold>(`/api/molds/${selected.id}`, {
+        name: editName,
+        manufacturerId: editManufacturerId,
+      });
+      setMolds((prev) =>
+        prev.map((m) => (m.id === res.data.id ? res.data : m)),
+      );
+      setSelected(null);
+      setEditName("");
+      setEditManufacturerId("");
+    } catch {
+      alert("Failed to update mold");
+    }
+  };
 
   return (
     <div>
@@ -97,8 +100,7 @@ const handleUpdate = async () => {
         value={addManufacturerId}
         onChange={(e) => {
           const value = e.target.value;
-            setAddManufacturerId(value ? Number(value) : '');
-
+          setAddManufacturerId(value ? Number(value) : "");
         }}
       >
         <option value="">Select Manufacturer</option>
@@ -138,4 +140,3 @@ const handleUpdate = async () => {
 };
 
 export default ManageMolds;
-

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Horse } from '../types/Horse';
-import { getAllHorses } from '../api/horseApi';
+import React, { useEffect, useState } from "react";
+import { Horse } from "../types/Horse";
+import { getAllHorses } from "../api/horseApi";
 
 const HorseList: React.FC = () => {
   const [horses, setHorses] = useState<Horse[]>([]);
@@ -9,8 +9,8 @@ const HorseList: React.FC = () => {
 
   useEffect(() => {
     getAllHorses()
-      .then(data => setHorses(data))
-      .catch(err => setError('Failed to load horses'))
+      .then((data) => setHorses(data))
+      .catch((err) => setError("Failed to load horses"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -21,10 +21,11 @@ const HorseList: React.FC = () => {
     <div>
       <h2>All Horses</h2>
       <ul>
-        {horses.map(horse => (
+        {horses.map((horse) => (
           <li key={horse.id}>
             <strong>{horse.name}</strong> — Mold: {horse.mold.name} (
-            {horse.mold.manufacturer.name}), Scale: {horse.scale.name}, Finish: {horse.finish.name}, Run: {horse.runType.name}
+            {horse.mold.manufacturer.name}), Scale: {horse.scale.name}, Finish:{" "}
+            {horse.finish.name}, Run: {horse.runType.name}
           </li>
         ))}
       </ul>

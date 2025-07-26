@@ -1,13 +1,8 @@
-import React from 'react';
-import { ManageEntities } from './ManageEntities';
+import React from "react";
+import { ManageEntities } from "./ManageEntities";
 
 const ManageCondition: React.FC = () => {
-  return (
-    <ManageEntities
-      endpoint="/api/conditions"
-      title="Conditions"
-    />
-  );
+  return <ManageEntities endpoint="/api/conditions" title="Conditions" />;
 };
 
 export default ManageCondition;

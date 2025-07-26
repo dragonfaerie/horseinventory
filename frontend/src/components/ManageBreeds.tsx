@@ -1,13 +1,8 @@
-import React from 'react';
-import { ManageEntities } from './ManageEntities';
+import React from "react";
+import { ManageEntities } from "./ManageEntities";
 
 const ManageBreeds: React.FC = () => {
-  return (
-    <ManageEntities
-      endpoint="/api/breeds"
-      title="Breeds"
-    />
-  );
+  return <ManageEntities endpoint="/api/breeds" title="Breeds" />;
 };
 
 export default ManageBreeds;

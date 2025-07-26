@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 interface Entity {
   id: number;
@@ -21,8 +21,8 @@ export function ManageEntities<T extends Entity>({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<T | null>(null);
-  const [addName, setAddName] = useState('');
-  const [editName, setEditName] = useState('');
+  const [addName, setAddName] = useState("");
+  const [editName, setEditName] = useState("");
 
   const fetchItems = async () => {
     try {
@@ -44,15 +44,15 @@ export function ManageEntities<T extends Entity>({
     try {
       const res = await axios.post<T>(endpoint, { name: addName.trim() });
       setItems([...items, res.data]);
-      setAddName('');
+      setAddName("");
     } catch {
-      setError('Failed to add item');
+      setError("Failed to add item");
     }
   };
 
   const handleSelect = (item: T) => {
     setSelected(item);
-    setEditName(item.name ?? '');
+    setEditName(item.name ?? "");
   };
 
   const handleUpdate = async () => {
@@ -63,12 +63,12 @@ export function ManageEntities<T extends Entity>({
         name: editName,
       });
       setItems((prev) =>
-        prev.map((item) => (item.id === res.data.id ? res.data : item))
+        prev.map((item) => (item.id === res.data.id ? res.data : item)),
       );
       setSelected(null);
-      setEditName('');
+      setEditName("");
     } catch {
-      alert('Failed to update item');
+      alert("Failed to update item");
     }
   };
 
@@ -76,12 +76,12 @@ export function ManageEntities<T extends Entity>({
     <div>
       <h2>{title}</h2>
       {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <ul>
         {items.map((item) => (
           <li key={item.id}>
-            {getName(item)}{' '}
+            {getName(item)}{" "}
             <button onClick={() => handleSelect(item)}>Edit</button>
           </li>
         ))}
@@ -110,4 +110,3 @@ export function ManageEntities<T extends Entity>({
     </div>
   );
 }
-
