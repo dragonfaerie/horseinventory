@@ -19,10 +19,31 @@ const AdminDashboard: React.FC = () => {
           <Link to="/admin/conditions">Manage Conditions</Link>
         </li>
         <li>
+          <Link to="/admin/finish">Manage Finish</Link>
+        </li>
+        <li>
+          <Link to="/admin/gender">Manage Genders</Link>
+        </li>
+        <li>
+          <Link to="/admin/locations">Manage Locations</Link>
+        </li>
+
+        <li>
           <Link to="/admin/manufacturers">Manage Manufacturers</Link>
         </li>
         <li>
           <Link to="/admin/molds">Manage Molds</Link>
+        </li>
+
+        <li>
+          <Link to="/admin/patterns">Manage Patterns</Link>
+        </li>
+
+        <li>
+          <Link to="/admin/run-types">Manage Run Types</Link>
+        </li>
+        <li>
+          <Link to="/admin/scales">Manage Scales</Link>
         </li>
       </ul>
     </div>

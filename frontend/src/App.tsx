@@ -9,6 +9,12 @@ import ManageBreeds from "./components/ManageBreeds";
 import ManageColors from "./components/ManageColors";
 import ManageBreedTypes from "./components/ManageBreedTypes";
 import ManageCondition from "./components/ManageCondition";
+import ManageFinish from "./components/ManageFinish";
+import ManageGenders from "./components/ManageGenders";
+import ManageLocations from "./components/ManageLocations";
+import ManagePatterns from "./components/ManagePatterns";
+import ManageRunTypes from "./components/ManageRunTypes";
+import ManageScales from "./components/ManageScales";
 
 const Home: React.FC = () => (
   <div>
@@ -30,11 +36,19 @@ function App() {
           <Route path="/admin/breed-types" element={<ManageBreedTypes />} />
           <Route path="/admin/colors" element={<ManageColors />} />
           <Route path="/admin/conditions" element={<ManageCondition />} />
+          <Route path="/admin/finish" element={<ManageFinish />} />
+          <Route path="/admin/gender" element={<ManageGenders />} />
+          <Route path="/admin/locations" element={<ManageLocations />} />
+
           <Route
             path="/admin/manufacturers"
             element={<ManageManufacturers />}
           />
           <Route path="/admin/molds" element={<ManageMolds />} />
+
+          <Route path="/admin/patterns" element={<ManagePatterns />} />
+          <Route path="/admin/run-types" element={<ManageRunTypes />} />
+          <Route path="/admin/scales" element={<ManageScales />} />
         </Routes>
       </div>
     </Router>
