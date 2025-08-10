@@ -37,16 +37,17 @@ const AdminDashboard: React.FC = () => {
         <li>
           <Link to="/admin/molds">Manage Molds</Link>
         </li>
-
         <li>
           <Link to="/admin/patterns">Manage Patterns</Link>
         </li>
-
         <li>
           <Link to="/admin/run-types">Manage Run Types</Link>
         </li>
         <li>
           <Link to="/admin/scales">Manage Scales</Link>
+        </li>
+        <li>
+          <Link to="/admin/tracking">Manage Tracking</Link>
         </li>
       </ul>
     </div>

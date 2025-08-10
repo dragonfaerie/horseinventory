@@ -16,6 +16,7 @@ import ManagePatterns from "./components/ManagePatterns";
 import ManageRunTypes from "./components/ManageRunTypes";
 import ManageScales from "./components/ManageScales";
 import ManageModels from "./components/ManageModels";
+import ManageTracking from "./components/ManageTracking";
 
 const Home: React.FC = () => (
   <div>
@@ -40,18 +41,16 @@ function App() {
           <Route path="/admin/finish" element={<ManageFinish />} />
           <Route path="/admin/gender" element={<ManageGenders />} />
           <Route path="/admin/locations" element={<ManageLocations />} />
-
           <Route
             path="/admin/manufacturers"
             element={<ManageManufacturers />}
           />
-
           <Route path="/admin/models" element={<ManageModels />} />
           <Route path="/admin/molds" element={<ManageMolds />} />
-
           <Route path="/admin/patterns" element={<ManagePatterns />} />
           <Route path="/admin/run-types" element={<ManageRunTypes />} />
           <Route path="/admin/scales" element={<ManageScales />} />
+          <Route path="/admin/tracking" element={<ManageTracking />} />
         </Routes>
       </div>
     </Router>
