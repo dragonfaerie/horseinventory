@@ -15,6 +15,7 @@ import ManageLocations from "./components/ManageLocations";
 import ManagePatterns from "./components/ManagePatterns";
 import ManageRunTypes from "./components/ManageRunTypes";
 import ManageScales from "./components/ManageScales";
+import ManageModels from "./components/ManageModels";
 
 const Home: React.FC = () => (
   <div>
@@ -44,6 +45,8 @@ function App() {
             path="/admin/manufacturers"
             element={<ManageManufacturers />}
           />
+
+          <Route path="/admin/models" element={<ManageModels />} />
           <Route path="/admin/molds" element={<ManageMolds />} />
 
           <Route path="/admin/patterns" element={<ManagePatterns />} />
