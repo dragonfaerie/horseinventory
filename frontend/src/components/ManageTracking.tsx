@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Tracking from "../types/tracking"
 import axios from "axios";
-
-interface Tracking {
-  id: number;
-  purchasePrice: number;
-  sellPrice: number;
-  nanQualified: boolean;
-  firstPlace: number;
-  secondPlace: number;
-  thirdPlace: number;
-  fourthPlace: number;
-  fifthPlace: number;
-}
 
 const ManageTracking: React.FC = () => {
   const [trackings, setTrackings] = useState<Tracking[]>([]);

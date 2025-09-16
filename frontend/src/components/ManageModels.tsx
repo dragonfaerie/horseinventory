@@ -1,35 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-interface Finish {
-  id: number;
-  name: string;
-}
-
-interface Mold {
-  id: number;
-  name: string;
-}
-
-interface RunType {
-  id: number;
-  name: string;
-}
-
-interface Scale {
-  id: number;
-  name: string;
-}
-
-interface Model {
-  id: number;
-  name: string;
-  mold: Mold;
-  runType: RunType;
-  finish: Finish;
-  scale: Scale;
-}
-
 export default function ManageModels() {
   const [models, setModels] = useState<Model[]>([]);
   const [molds, setMolds] = useState<Mold[]>([]);

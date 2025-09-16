@@ -17,6 +17,8 @@ import ManageRunTypes from "./components/ManageRunTypes";
 import ManageScales from "./components/ManageScales";
 import ManageModels from "./components/ManageModels";
 import ManageTracking from "./components/ManageTracking";
+import HorseForm from "./components/HorseForm";
+import Horselist from "./components/Horselist"
 
 const Home: React.FC = () => (
   <div>
@@ -51,6 +53,10 @@ function App() {
           <Route path="/admin/run-types" element={<ManageRunTypes />} />
           <Route path="/admin/scales" element={<ManageScales />} />
           <Route path="/admin/tracking" element={<ManageTracking />} />
+
+          <Route path="/horses" element={<HorseList />} />
+          <Route path="/horses/new" element={<HorseForm />} />
+          <Route path="/horses/:id/edit" element={<HorseForm />} />
         </Routes>
       </div>
     </Router>
