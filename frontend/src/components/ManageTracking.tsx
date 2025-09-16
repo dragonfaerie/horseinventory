@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Tracking from "../types/Tracking";
+import { Tracking } from "../types/Tracking";
 import axios from "axios";
 
 const ManageTracking: React.FC = () => {

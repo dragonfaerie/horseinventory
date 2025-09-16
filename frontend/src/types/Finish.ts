@@ -1,4 +1,4 @@
-export interface Finishes {
+export interface Finish {
   id: number;
   name: string;
 }

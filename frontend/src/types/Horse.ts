@@ -42,3 +42,21 @@ export interface Horse {
   // breed, breedType, color, pattern, gender, condition, location, tracking...
   officePony?: string | null;
 }
+
+export interface HorseRequest {
+  tagged: boolean;
+  manufacturerId: number;
+  moldId: number;
+  scaleId: number;
+  modelId: number;
+  breedId: number;
+  breedTypeId: number;
+  colorId: number;
+  patternId: number;
+  genderId: number;
+  conditionId: number;
+  locationId: number;
+  trackingId: number;
+  showName: string;
+  officePony?: string | null;
+}
