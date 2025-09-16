@@ -23,9 +23,11 @@ const HorseList: React.FC = () => {
       <ul>
         {horses.map((horse) => (
           <li key={horse.id}>
-            <strong>{horse.name}</strong> — Mold: {horse.mold.name} (
-            {horse.mold.manufacturer.name}), Scale: {horse.scale.name}, Finish:{" "}
-            {horse.finish.name}, Run: {horse.runType.name}
+            <strong>{horse.showName}</strong>
+            {" — "}Mold: {horse.mold.name} ({horse.mold.manufacturer.name})
+            {", "}Scale: {horse.scale.name}
+            {", "}Finish: {horse.model.finish.name}
+            {", "}Run: {horse.model.runType.name}
           </li>
         ))}
       </ul>

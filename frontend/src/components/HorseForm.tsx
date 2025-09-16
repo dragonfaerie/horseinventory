@@ -1,213 +1,185 @@
+// src/components/HorseForm.tsx
 import React, { useState } from "react";
 
-interface HorseFormData {
-  name: string;
-  manufacturer: string;
-  mold: string;
-  finish: string;
-  color: string;
-  scale: string;
-  year: number | "";
-  purchasePrice: number | "";
-  sellPrice: number | "";
-  nanQualified: boolean;
-  firstPlace: number | "";
-  secondPlace: number | "";
-  thirdPlace: number | "";
-  fourthPlace: number | "";
-  fifthPlace: number | "";
-  officePony: string; // month/year string
-}
+type HorseFormData = {
+  showName: string;
+  tagged: boolean;
+  manufacturerId: number | "";
+  moldId: number | "";
+  scaleId: number | "";
+  modelId: number | "";
+  breedId: number | "";
+  breedTypeId: number | "";
+  colorId: number | "";
+  patternId: number | "";
+  genderId: number | "";
+  conditionId: number | "";
+  locationId: number | "";
+  trackingId: number | "";
+  officePony: string; // MM/YYYY or free text
+};
 
 const HorseForm: React.FC = () => {
-  const [formData, setFormData] = useState<HorseFormData>({
-    name: "",
-    manufacturer: "",
-    mold: "",
-    finish: "",
-    color: "",
-    scale: "",
-    year: "",
-    purchasePrice: "",
-    sellPrice: "",
-    nanQualified: false,
-    firstPlace: "",
-    secondPlace: "",
-    thirdPlace: "",
-    fourthPlace: "",
-    fifthPlace: "",
+  const [form, setForm] = useState<HorseFormData>({
+    showName: "",
+    tagged: false,
+    manufacturerId: "",
+    moldId: "",
+    scaleId: "",
+    modelId: "",
+    breedId: "",
+    breedTypeId: "",
+    colorId: "",
+    patternId: "",
+    genderId: "",
+    conditionId: "",
+    locationId: "",
+    trackingId: "",
     officePony: "",
   });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
+  const upd = (k: keyof HorseFormData, v: any) =>
+    setForm((s) => ({ ...s, [k]: v }));
+
+  const toNum = (v: string) => (v === "" ? "" : Number(v));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
+    setError(null);
     try {
-      const response = await fetch("/api/horses", {
+      const payload = {
+        tagged: form.tagged,
+        manufacturerId: form.manufacturerId,
+        moldId: form.moldId,
+        scaleId: form.scaleId,
+        modelId: form.modelId,
+        breedId: form.breedId,
+        breedTypeId: form.breedTypeId,
+        colorId: form.colorId,
+        patternId: form.patternId,
+        genderId: form.genderId,
+        conditionId: form.conditionId,
+        locationId: form.locationId,
+        trackingId: form.trackingId,
+        showName: form.showName.trim(),
+        officePony: form.officePony || null,
+      };
+      const res = await fetch("/api/horses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
-      if (response.ok) {
-        alert("Horse saved!");
-        setFormData({
-          name: "",
-          manufacturer: "",
-          mold: "",
-          finish: "",
-          color: "",
-          scale: "",
-          year: "",
-          purchasePrice: "",
-          sellPrice: "",
-          nanQualified: false,
-          firstPlace: "",
-          secondPlace: "",
-          thirdPlace: "",
-          fourthPlace: "",
-          fifthPlace: "",
-          officePony: "",
-        });
-      } else {
-        alert("Error saving horse");
-      }
-    } catch (err) {
+      if (!res.ok) throw new Error(`Save failed (${res.status})`);
+      // success: clear the form
+      setForm({
+        showName: "",
+        tagged: false,
+        manufacturerId: "",
+        moldId: "",
+        scaleId: "",
+        modelId: "",
+        breedId: "",
+        breedTypeId: "",
+        colorId: "",
+        patternId: "",
+        genderId: "",
+        conditionId: "",
+        locationId: "",
+        trackingId: "",
+        officePony: "",
+      });
+      alert("Horse saved!");
+    } catch (err: any) {
       console.error(err);
-      alert("Network error");
+      setError(err.message || "Error saving horse");
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
-    <Card className="max-w-3xl mx-auto mt-6 shadow-lg rounded-2xl">
-      <CardHeader>
-        <CardTitle>Add / Update Horse</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Horse Name"
+    <div className="max-w-3xl mx-auto mt-6 rounded-2xl shadow-lg bg-white p-4">
+      <h2 className="text-xl font-bold mb-4">Add / Update Horse</h2>
+      {error && <p className="text-red-600 mb-3">{error}</p>}
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-3"
+      >
+        <div className="col-span-2">
+          <label className="block text-sm font-medium">Show Name</label>
+          <input
+            className="mt-1 w-full rounded border p-2"
+            value={form.showName}
+            onChange={(e) => upd("showName", e.target.value)}
+            placeholder="Mr Sparkles"
             required
           />
-          <Input
-            name="manufacturer"
-            value={formData.manufacturer}
-            onChange={handleChange}
-            placeholder="Manufacturer"
-            required
+        </div>
+
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={form.tagged}
+            onChange={(e) => upd("tagged", e.target.checked)}
           />
-          <Input
-            name="mold"
-            value={formData.mold}
-            onChange={handleChange}
-            placeholder="Mold"
-          />
-          <Input
-            name="finish"
-            value={formData.finish}
-            onChange={handleChange}
-            placeholder="Finish"
-          />
-          <Input
-            name="color"
-            value={formData.color}
-            onChange={handleChange}
-            placeholder="Color"
-          />
-          <Input
-            name="scale"
-            value={formData.scale}
-            onChange={handleChange}
-            placeholder="Scale"
-          />
-          <Input
-            type="number"
-            name="year"
-            value={formData.year}
-            onChange={handleChange}
-            placeholder="Year"
-          />
-          <Input
-            type="number"
-            step="0.01"
-            name="purchasePrice"
-            value={formData.purchasePrice}
-            onChange={handleChange}
-            placeholder="Purchase Price"
-          />
-          <Input
-            type="number"
-            step="0.01"
-            name="sellPrice"
-            value={formData.sellPrice}
-            onChange={handleChange}
-            placeholder="Sell Price"
-          />
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="nanQualified"
-              checked={formData.nanQualified}
-              onChange={handleChange}
-            />
-            NAN Qualified
+          Tagged
+        </label>
+
+        <div>
+          <label className="block text-sm font-medium">
+            Office Pony (MM/YYYY)
           </label>
-          <Input
-            type="number"
-            name="firstPlace"
-            value={formData.firstPlace}
-            onChange={handleChange}
-            placeholder="First Place"
+          <input
+            className="mt-1 w-full rounded border p-2"
+            value={form.officePony}
+            onChange={(e) => upd("officePony", e.target.value)}
+            placeholder="09/2025"
           />
-          <Input
-            type="number"
-            name="secondPlace"
-            value={formData.secondPlace}
-            onChange={handleChange}
-            placeholder="Second Place"
-          />
-          <Input
-            type="number"
-            name="thirdPlace"
-            value={formData.thirdPlace}
-            onChange={handleChange}
-            placeholder="Third Place"
-          />
-          <Input
-            type="number"
-            name="fourthPlace"
-            value={formData.fourthPlace}
-            onChange={handleChange}
-            placeholder="Fourth Place"
-          />
-          <Input
-            type="number"
-            name="fifthPlace"
-            value={formData.fifthPlace}
-            onChange={handleChange}
-            placeholder="Fifth Place"
-          />
-          <Input
-            name="officePony"
-            value={formData.officePony}
-            onChange={handleChange}
-            placeholder="Office Pony (MM/YYYY)"
-          />
-          <div className="col-span-2 flex justify-end">
-            <Button type="submit">Save Horse</Button>
+        </div>
+
+        {/* IDs — swap to dropdowns later once you’ve got the options handy */}
+        {[
+          ["manufacturerId", "Manufacturer ID"],
+          ["moldId", "Mold ID"],
+          ["scaleId", "Scale ID"],
+          ["modelId", "Model ID"],
+          ["breedId", "Breed ID"],
+          ["breedTypeId", "Breed Type ID"],
+          ["colorId", "Color ID"],
+          ["patternId", "Pattern ID"],
+          ["genderId", "Gender ID"],
+          ["conditionId", "Condition ID"],
+          ["locationId", "Location ID"],
+          ["trackingId", "Tracking ID"],
+        ].map(([key, label]) => (
+          <div key={key}>
+            <label className="block text-sm font-medium">{label}</label>
+            <input
+              className="mt-1 w-full rounded border p-2"
+              inputMode="numeric"
+              value={form[key as keyof HorseFormData] as any}
+              onChange={(e) =>
+                upd(key as keyof HorseFormData, toNum(e.target.value))
+              }
+              placeholder="e.g. 1"
+            />
           </div>
-        </form>
-      </CardContent>
-    </Card>
+        ))}
+
+        <div className="col-span-2 flex justify-end">
+          <button
+            type="submit"
+            disabled={saving}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+          >
+            {saving ? "Saving..." : "Save Horse"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

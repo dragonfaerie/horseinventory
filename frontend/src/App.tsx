@@ -18,7 +18,7 @@ import ManageScales from "./components/ManageScales";
 import ManageModels from "./components/ManageModels";
 import ManageTracking from "./components/ManageTracking";
 import HorseForm from "./components/HorseForm";
-import Horselist from "./components/Horselist"
+import Horselist from "./components/Horselist";
 
 const Home: React.FC = () => (
   <div>
