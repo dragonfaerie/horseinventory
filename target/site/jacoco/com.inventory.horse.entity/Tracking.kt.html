@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Tracking.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.inventory.horse.entity</a> &gt; <span class="el_source">Tracking.kt</span></div><h1>Tracking.kt</h1><pre class="source lang-java linenums">package com.inventory.horse.entity
+
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+import java.math.BigDecimal
+
+<span class="fc" id="L11">@Entity</span>
+@Table(name = &quot;tracking&quot;)
+<span class="pc" id="L13">data class Tracking(</span>
+<span class="fc" id="L14">    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)</span>
+<span class="pc" id="L15">    val id: Long = 0,</span>
+<span class="fc" id="L16">    @Column(precision = 8, scale = 2)</span>
+<span class="nc" id="L17">    val purchasePrice: BigDecimal,</span>
+<span class="fc" id="L18">    @Column(precision = 8, scale = 2)</span>
+<span class="nc" id="L19">    val sellPrice: BigDecimal,</span>
+<span class="fc" id="L20">    @Column</span>
+<span class="nc" id="L21">    val nanQualified: Boolean,</span>
+<span class="fc" id="L22">    @Column</span>
+<span class="nc" id="L23">    val firstPlace: Int,</span>
+<span class="fc" id="L24">    @Column</span>
+<span class="nc" id="L25">    val secondPlace: Int,</span>
+<span class="fc" id="L26">    @Column</span>
+<span class="nc" id="L27">    val thirdPlace: Int,</span>
+<span class="fc" id="L28">    @Column</span>
+<span class="nc" id="L29">    val fourthPlace: Int,</span>
+<span class="fc" id="L30">    @Column</span>
+<span class="nc" id="L31">    val fifthPlace: Int,</span>
+) {
+<span class="nc" id="L33">    constructor() : this(0, BigDecimal(&quot;0.00&quot;), BigDecimal(&quot;0.00&quot;), false, 0, 0, 0, 0, 0)</span>
+<span class="nc" id="L34">}</span>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
