@@ -1,30 +1,23 @@
 // src/types/Horse.ts
-export interface Manufacturer {
+import { Tracking } from "./Tracking";
+export interface NamedEntity {
   id: number;
   name: string;
 }
-export interface Mold {
-  id: number;
-  name: string;
+
+export interface Manufacturer extends NamedEntity {}
+
+export interface Mold extends NamedEntity {
   manufacturer: Manufacturer;
 }
-export interface RunType {
-  id: number;
-  name: string;
-}
-export interface Finish {
-  id: number;
-  name: string;
-}
-export interface Scale {
-  id: number;
-  name: string;
-}
-// add other “minors” similarly…
 
-export interface Model {
-  id: number;
-  name: string;
+export interface RunType extends NamedEntity {}
+
+export interface Finish extends NamedEntity {}
+
+export interface Scale extends NamedEntity {}
+
+export interface Model extends NamedEntity {
   mold: Mold;
   runType: RunType;
   finish: Finish;
@@ -39,7 +32,14 @@ export interface Horse {
   mold: Mold;
   scale: Scale;
   model: Model;
-  // breed, breedType, color, pattern, gender, condition, location, tracking...
+  breed: NamedEntity;
+  breedType: NamedEntity;
+  color: NamedEntity;
+  pattern: NamedEntity;
+  gender: NamedEntity;
+  condition: NamedEntity;
+  location: NamedEntity;
+  tracking: Tracking;
   officePony?: string | null;
 }
 

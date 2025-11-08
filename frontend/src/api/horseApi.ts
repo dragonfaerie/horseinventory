@@ -15,7 +15,7 @@ export const createHorse = async (payload: HorseRequest): Promise<Horse> => {
 
 export const updateHorse = async (
   id: number,
-  payload: Partial<HorseRequest>,
+  payload: HorseRequest,
 ): Promise<Horse> => {
   const response = await axios.put<Horse>(`${BASE_URL}/${id}`, payload);
   return response.data;

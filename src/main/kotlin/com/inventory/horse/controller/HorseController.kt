@@ -44,20 +44,41 @@ class HorseController(
     @GetMapping
     fun getAll(): List<Horse> = repo.findAll()
 
+    @GetMapping("/{id}")
+    fun getOne(
+        @PathVariable id: Long,
+    ): ResponseEntity<Horse> =
+        repo
+            .findById(id)
+            .map { ResponseEntity.ok(it) }
+            .orElse(ResponseEntity.notFound().build())
+
     @PostMapping
     fun createHorse(
         @RequestBody request: HorseRequest,
-    ): ResponseEntity<Horse> {
+    ): ResponseEntity<Horse> = ResponseEntity.ok(repo.save(toHorse(request)))
+
+    @PutMapping("/{id}")
+    fun update(
+        @PathVariable id: Long,
+        @RequestBody request: HorseRequest,
+    ): ResponseEntity<Horse> =
+        if (!repo.existsById(id)) {
+            ResponseEntity.notFound().build()
+        } else {
+            ResponseEntity.ok(repo.save(toHorse(request, id)))
+        }
+
+    private fun toHorse(
+        request: HorseRequest,
+        id: Long = 0,
+    ): Horse {
         val manufacturer =
             manufacturerRepository
-                .findById(
-                    request.manufacturerId,
-                ).orElseThrow { RuntimeException("Manufacturer not Found") }
+                .findById(request.manufacturerId)
+                .orElseThrow { RuntimeException("Manufacturer not found") }
 
-        val mold =
-            moldRepository
-                .findById(request.moldId)
-                .orElseThrow { RuntimeException("Mold not found") }
+        val mold = moldRepository.findById(request.moldId).orElseThrow { RuntimeException("Mold not found") }
 
         val scale = scaleRepository.findById(request.scaleId).orElseThrow { RuntimeException("Scale not found") }
 
@@ -79,36 +100,23 @@ class HorseController(
 
         val tracking = trackingRepository.findById(request.trackingId).orElseThrow { RuntimeException("Tracking not found") }
 
-        val horse =
-            Horse(
-                tagged = request.tagged,
-                manufacturer = manufacturer,
-                mold = mold,
-                scale = scale,
-                model = model,
-                breed = breed,
-                breedType = breedType,
-                color = color,
-                pattern = pattern,
-                gender = gender,
-                condition = condition,
-                location = location,
-                tracking = tracking,
-                showName = request.showName,
-                officePony = request.officePony,
-            )
-        return ResponseEntity.ok(repo.save(horse))
+        return Horse(
+            id = id,
+            tagged = request.tagged,
+            manufacturer = manufacturer,
+            mold = mold,
+            scale = scale,
+            model = model,
+            breed = breed,
+            breedType = breedType,
+            color = color,
+            pattern = pattern,
+            gender = gender,
+            condition = condition,
+            location = location,
+            tracking = tracking,
+            showName = request.showName,
+            officePony = request.officePony,
+        )
     }
-
-    @PutMapping("/{id}")
-    fun update(
-        @PathVariable id: Long,
-        @RequestBody updated: Horse,
-    ): ResponseEntity<Horse> =
-        repo
-            .findById(id)
-            .map {
-                val newOne = updated.copy(id = id)
-                ResponseEntity.ok(repo.save(newOne))
-            }.orElse(ResponseEntity.notFound().build())
 }
