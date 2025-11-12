@@ -14,7 +14,6 @@ import com.inventory.horse.entity.Mold
 import com.inventory.horse.entity.Pattern
 import com.inventory.horse.entity.RunType
 import com.inventory.horse.entity.Scale
-import com.inventory.horse.entity.Tracking
 import com.inventory.horse.entity.requests.HorseRequest
 import com.inventory.horse.repository.BreedRepository
 import com.inventory.horse.repository.BreedTypeRepository
@@ -28,7 +27,6 @@ import com.inventory.horse.repository.ModelRepository
 import com.inventory.horse.repository.MoldRepository
 import com.inventory.horse.repository.PatternRepository
 import com.inventory.horse.repository.ScaleRepository
-import com.inventory.horse.repository.TrackingRepository
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -84,9 +82,6 @@ class HorseControllerTest {
     @MockK
     lateinit var locationRepository: LocationRepository
 
-    @MockK
-    lateinit var trackingRepository: TrackingRepository
-
     private lateinit var controller: HorseController
 
     @BeforeEach
@@ -106,7 +101,6 @@ class HorseControllerTest {
                 genderRepository = genderRepository,
                 conditionRepository = conditionRepository,
                 locationRepository = locationRepository,
-                trackingRepository = trackingRepository,
             )
     }
 
@@ -204,7 +198,6 @@ class HorseControllerTest {
         every { genderRepository.findById(refs.gender.id) } returns Optional.of(refs.gender)
         every { conditionRepository.findById(refs.condition.id) } returns Optional.of(refs.condition)
         every { locationRepository.findById(refs.location.id) } returns Optional.of(refs.location)
-        every { trackingRepository.findById(refs.tracking.id) } returns Optional.of(refs.tracking)
     }
 
     private fun referenceData(): ReferenceData = ReferenceData()
@@ -231,18 +224,8 @@ class HorseControllerTest {
         val gender = Gender(id = 11, name = "Mare")
         val condition = Condition(id = 12, name = "Mint")
         val location = Location(id = 13, name = "Show String")
-        val tracking =
-            Tracking(
-                id = 14,
-                purchasePrice = BigDecimal("50.00"),
-                sellPrice = BigDecimal("0.00"),
-                nanQualified = false,
-                firstPlace = 1,
-                secondPlace = 0,
-                thirdPlace = 0,
-                fourthPlace = 0,
-                fifthPlace = 0,
-            )
+        val purchasePrice = BigDecimal("50.00")
+        val sellPrice = BigDecimal("0.00")
 
         fun toRequest(tagged: Boolean = true): HorseRequest =
             HorseRequest(
@@ -258,7 +241,14 @@ class HorseControllerTest {
                 genderId = gender.id,
                 conditionId = condition.id,
                 locationId = location.id,
-                trackingId = tracking.id,
+                purchasePrice = purchasePrice,
+                sellPrice = sellPrice,
+                nanQualified = false,
+                firstPlace = 1,
+                secondPlace = 0,
+                thirdPlace = 0,
+                fourthPlace = 0,
+                fifthPlace = 0,
                 showName = "Star",
                 officePony = "Desk",
             )
@@ -281,7 +271,14 @@ class HorseControllerTest {
                 gender = gender,
                 condition = condition,
                 location = location,
-                tracking = tracking,
+                purchasePrice = purchasePrice,
+                sellPrice = sellPrice,
+                nanQualified = false,
+                firstPlace = 1,
+                secondPlace = 0,
+                thirdPlace = 0,
+                fourthPlace = 0,
+                fifthPlace = 0,
                 showName = "Star",
                 officePony = "Desk",
             )

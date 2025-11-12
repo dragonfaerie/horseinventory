@@ -14,7 +14,6 @@ import com.inventory.horse.repository.ModelRepository
 import com.inventory.horse.repository.MoldRepository
 import com.inventory.horse.repository.PatternRepository
 import com.inventory.horse.repository.ScaleRepository
-import com.inventory.horse.repository.TrackingRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -39,7 +38,6 @@ class HorseController(
     private val genderRepository: GenderRepository,
     private val conditionRepository: ConditionRepository,
     private val locationRepository: LocationRepository,
-    private val trackingRepository: TrackingRepository,
 ) {
     @GetMapping
     fun getAll(): List<Horse> = repo.findAll()
@@ -98,8 +96,6 @@ class HorseController(
 
         val location = locationRepository.findById(request.locationId).orElseThrow { RuntimeException("Location not found") }
 
-        val tracking = trackingRepository.findById(request.trackingId).orElseThrow { RuntimeException("Tracking not found") }
-
         return Horse(
             id = id,
             tagged = request.tagged,
@@ -114,7 +110,14 @@ class HorseController(
             gender = gender,
             condition = condition,
             location = location,
-            tracking = tracking,
+            purchasePrice = request.purchasePrice,
+            sellPrice = request.sellPrice,
+            nanQualified = request.nanQualified,
+            firstPlace = request.firstPlace,
+            secondPlace = request.secondPlace,
+            thirdPlace = request.thirdPlace,
+            fourthPlace = request.fourthPlace,
+            fifthPlace = request.fifthPlace,
             showName = request.showName,
             officePony = request.officePony,
         )

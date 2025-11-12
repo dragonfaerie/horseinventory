@@ -1,5 +1,4 @@
 // src/types/Horse.ts
-import { Tracking } from "./Tracking";
 export interface NamedEntity {
   id: number;
   name: string;
@@ -39,7 +38,14 @@ export interface Horse {
   gender: NamedEntity;
   condition: NamedEntity;
   location: NamedEntity;
-  tracking: Tracking;
+  purchasePrice: number;
+  sellPrice: number;
+  nanQualified: boolean;
+  firstPlace: number;
+  secondPlace: number;
+  thirdPlace: number;
+  fourthPlace: number;
+  fifthPlace: number;
   officePony?: string | null;
 }
 
@@ -56,7 +62,14 @@ export interface HorseRequest {
   genderId: number;
   conditionId: number;
   locationId: number;
-  trackingId: number;
+  purchasePrice: number;
+  sellPrice: number;
+  nanQualified: boolean;
+  firstPlace: number;
+  secondPlace: number;
+  thirdPlace: number;
+  fourthPlace: number;
+  fifthPlace: number;
   showName: string;
   officePony?: string | null;
 }

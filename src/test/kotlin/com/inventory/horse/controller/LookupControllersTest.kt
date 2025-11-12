@@ -13,7 +13,6 @@ import com.inventory.horse.entity.Mold
 import com.inventory.horse.entity.Pattern
 import com.inventory.horse.entity.RunType
 import com.inventory.horse.entity.Scale
-import com.inventory.horse.entity.Tracking
 import com.inventory.horse.entity.requests.ModelRequest
 import com.inventory.horse.entity.requests.MoldRequest
 import com.inventory.horse.repository.BreedRepository
@@ -29,7 +28,6 @@ import com.inventory.horse.repository.MoldRepository
 import com.inventory.horse.repository.PatternRepository
 import com.inventory.horse.repository.RunTypeRepository
 import com.inventory.horse.repository.ScaleRepository
-import com.inventory.horse.repository.TrackingRepository
 import io.mockk.clearMocks
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -43,7 +41,6 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import java.math.BigDecimal
 import java.util.Optional
 
 data class CrudControllerBindings<T : Any>(
@@ -336,48 +333,6 @@ class ScaleControllerTest : SimpleLookupControllerContract<Scale, ScaleRepositor
         entity: Scale,
         id: Long,
     ): Scale = entity.copy(id = id)
-}
-
-class TrackingControllerTest : SimpleLookupControllerContract<Tracking, TrackingRepository>() {
-    private val repoMock = mockk<TrackingRepository>()
-    private val controllerInstance = TrackingController(repoMock)
-
-    override val repo: TrackingRepository = repoMock
-    override val controller =
-        CrudControllerBindings(
-            getAll = controllerInstance::getAll,
-            create = controllerInstance::create,
-            update = controllerInstance::update,
-        )
-    override val entity =
-        Tracking(
-            id = 1,
-            purchasePrice = BigDecimal("10.00"),
-            sellPrice = BigDecimal("20.00"),
-            nanQualified = true,
-            firstPlace = 1,
-            secondPlace = 0,
-            thirdPlace = 0,
-            fourthPlace = 0,
-            fifthPlace = 0,
-        )
-    override val updatePayload =
-        Tracking(
-            id = 0,
-            purchasePrice = BigDecimal("15.00"),
-            sellPrice = BigDecimal("25.00"),
-            nanQualified = false,
-            firstPlace = 0,
-            secondPlace = 1,
-            thirdPlace = 0,
-            fourthPlace = 0,
-            fifthPlace = 0,
-        )
-
-    override fun withId(
-        entity: Tracking,
-        id: Long,
-    ): Tracking = entity.copy(id = id)
 }
 
 class ModelControllerTest {

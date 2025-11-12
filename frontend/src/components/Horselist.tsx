@@ -34,7 +34,6 @@ const HorseList: React.FC = () => {
       </div>
       <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {horses.map((horse) => {
-          const tracking = horse.tracking;
           const detailRows = [
             { label: "Manufacturer", value: horse.manufacturer.name },
             {
@@ -60,16 +59,16 @@ const HorseList: React.FC = () => {
             { label: "Condition", value: horse.condition.name },
             { label: "Location", value: horse.location.name },
             {
-              label: "Tracking",
-              value: `#${tracking.id} · Bought ${formatCurrency(tracking.purchasePrice)} · Sold ${formatCurrency(
-                tracking.sellPrice,
-              )} · NAN Qualified: ${tracking.nanQualified ? "Yes" : "No"}`,
+              label: "Purchase Details",
+              value: `Bought ${formatCurrency(horse.purchasePrice)} · Sold ${formatCurrency(
+                horse.sellPrice,
+              )} · NAN Qualified: ${horse.nanQualified ? "Yes" : "No"}`,
             },
             {
               label: "Placings",
-              value: `1st: ${tracking.firstPlace || 0}, 2nd: ${tracking.secondPlace || 0}, 3rd: ${
-                tracking.thirdPlace || 0
-              }, 4th: ${tracking.fourthPlace || 0}, 5th: ${tracking.fifthPlace || 0}`,
+              value: `1st: ${horse.firstPlace || 0}, 2nd: ${horse.secondPlace || 0}, 3rd: ${
+                horse.thirdPlace || 0
+              }, 4th: ${horse.fourthPlace || 0}, 5th: ${horse.fifthPlace || 0}`,
             },
             {
               label: "Office Pony",
@@ -123,12 +122,12 @@ const HorseList: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <p className="text-xs uppercase tracking-[0.3em] text-indigo-200">Purchase</p>
                   <p className="text-lg font-semibold text-slate-50">
-                    {formatCurrency(tracking.purchasePrice)}
+                    {formatCurrency(horse.purchasePrice)}
                   </p>
                 </div>
                 <div className="mt-2 flex items-center justify-between text-slate-200">
                   <span>Sell Price</span>
-                  <span className="text-slate-50">{formatCurrency(tracking.sellPrice)}</span>
+                  <span className="text-slate-50">{formatCurrency(horse.sellPrice)}</span>
                 </div>
               </div>
             </li>

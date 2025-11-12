@@ -14,7 +14,6 @@ import com.inventory.horse.repository.ModelRepository
 import com.inventory.horse.repository.MoldRepository
 import com.inventory.horse.repository.PatternRepository
 import com.inventory.horse.repository.ScaleRepository
-import com.inventory.horse.repository.TrackingRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,99 +23,103 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-<span class="fc" id="L27">@RestController</span>
+<span class="fc" id="L26">@RestController</span>
 @RequestMapping(&quot;/api/horses&quot;)
-<span class="fc" id="L29">class HorseController(</span>
-<span class="fc" id="L30">    private val repo: HorseRepository,</span>
-<span class="fc" id="L31">    private val manufacturerRepository: ManufacturerRepository,</span>
-<span class="fc" id="L32">    private val moldRepository: MoldRepository,</span>
-<span class="fc" id="L33">    private val scaleRepository: ScaleRepository,</span>
-<span class="fc" id="L34">    private val modelRepository: ModelRepository,</span>
-<span class="fc" id="L35">    private val breedRepository: BreedRepository,</span>
-<span class="fc" id="L36">    private val breedTypeRepository: BreedTypeRepository,</span>
-<span class="fc" id="L37">    private val colorRepository: ColorRepository,</span>
-<span class="fc" id="L38">    private val patternRepository: PatternRepository,</span>
-<span class="fc" id="L39">    private val genderRepository: GenderRepository,</span>
-<span class="fc" id="L40">    private val conditionRepository: ConditionRepository,</span>
-<span class="fc" id="L41">    private val locationRepository: LocationRepository,</span>
-<span class="fc" id="L42">    private val trackingRepository: TrackingRepository,</span>
+<span class="fc" id="L28">class HorseController(</span>
+<span class="fc" id="L29">    private val repo: HorseRepository,</span>
+<span class="fc" id="L30">    private val manufacturerRepository: ManufacturerRepository,</span>
+<span class="fc" id="L31">    private val moldRepository: MoldRepository,</span>
+<span class="fc" id="L32">    private val scaleRepository: ScaleRepository,</span>
+<span class="fc" id="L33">    private val modelRepository: ModelRepository,</span>
+<span class="fc" id="L34">    private val breedRepository: BreedRepository,</span>
+<span class="fc" id="L35">    private val breedTypeRepository: BreedTypeRepository,</span>
+<span class="fc" id="L36">    private val colorRepository: ColorRepository,</span>
+<span class="fc" id="L37">    private val patternRepository: PatternRepository,</span>
+<span class="fc" id="L38">    private val genderRepository: GenderRepository,</span>
+<span class="fc" id="L39">    private val conditionRepository: ConditionRepository,</span>
+<span class="fc" id="L40">    private val locationRepository: LocationRepository,</span>
 ) {
     @GetMapping
-<span class="fc" id="L45">    fun getAll(): List&lt;Horse&gt; = repo.findAll()</span>
+<span class="fc" id="L43">    fun getAll(): List&lt;Horse&gt; = repo.findAll()</span>
 
     @GetMapping(&quot;/{id}&quot;)
     fun getOne(
         @PathVariable id: Long,
     ): ResponseEntity&lt;Horse&gt; =
-<span class="fc" id="L51">        repo</span>
-<span class="fc" id="L52">            .findById(id)</span>
-<span class="fc" id="L53">            .map { ResponseEntity.ok(it) }</span>
-<span class="fc" id="L54">            .orElse(ResponseEntity.notFound().build())</span>
+<span class="fc" id="L49">        repo</span>
+<span class="fc" id="L50">            .findById(id)</span>
+<span class="fc" id="L51">            .map { ResponseEntity.ok(it) }</span>
+<span class="fc" id="L52">            .orElse(ResponseEntity.notFound().build())</span>
 
     @PostMapping
     fun createHorse(
         @RequestBody request: HorseRequest,
-<span class="fc" id="L59">    ): ResponseEntity&lt;Horse&gt; = ResponseEntity.ok(repo.save(toHorse(request)))</span>
+<span class="fc" id="L57">    ): ResponseEntity&lt;Horse&gt; = ResponseEntity.ok(repo.save(toHorse(request)))</span>
 
     @PutMapping(&quot;/{id}&quot;)
     fun update(
         @PathVariable id: Long,
         @RequestBody request: HorseRequest,
     ): ResponseEntity&lt;Horse&gt; =
-<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (!repo.existsById(id)) {</span>
-<span class="fc" id="L67">            ResponseEntity.notFound().build()</span>
-<span class="fc" id="L68">        } else {</span>
-<span class="fc" id="L69">            ResponseEntity.ok(repo.save(toHorse(request, id)))</span>
-<span class="fc" id="L70">        }</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (!repo.existsById(id)) {</span>
+<span class="fc" id="L65">            ResponseEntity.notFound().build()</span>
+<span class="fc" id="L66">        } else {</span>
+<span class="fc" id="L67">            ResponseEntity.ok(repo.save(toHorse(request, id)))</span>
+<span class="fc" id="L68">        }</span>
 
-<span class="fc" id="L72">    private fun toHorse(</span>
+<span class="fc" id="L70">    private fun toHorse(</span>
         request: HorseRequest,
-<span class="fc" id="L74">        id: Long = 0,</span>
+<span class="fc" id="L72">        id: Long = 0,</span>
     ): Horse {
-<span class="fc" id="L76">        val manufacturer =</span>
-<span class="fc" id="L77">            manufacturerRepository</span>
-<span class="fc" id="L78">                .findById(request.manufacturerId)</span>
-<span class="pc" id="L79">                .orElseThrow { RuntimeException(&quot;Manufacturer not found&quot;) }</span>
+<span class="fc" id="L74">        val manufacturer =</span>
+<span class="fc" id="L75">            manufacturerRepository</span>
+<span class="fc" id="L76">                .findById(request.manufacturerId)</span>
+<span class="pc" id="L77">                .orElseThrow { RuntimeException(&quot;Manufacturer not found&quot;) }</span>
 
-<span class="pc" id="L81">        val mold = moldRepository.findById(request.moldId).orElseThrow { RuntimeException(&quot;Mold not found&quot;) }</span>
+<span class="pc" id="L79">        val mold = moldRepository.findById(request.moldId).orElseThrow { RuntimeException(&quot;Mold not found&quot;) }</span>
 
-<span class="pc" id="L83">        val scale = scaleRepository.findById(request.scaleId).orElseThrow { RuntimeException(&quot;Scale not found&quot;) }</span>
+<span class="pc" id="L81">        val scale = scaleRepository.findById(request.scaleId).orElseThrow { RuntimeException(&quot;Scale not found&quot;) }</span>
 
-<span class="pc" id="L85">        val model = modelRepository.findById(request.modelId).orElseThrow { RuntimeException(&quot;Model not found&quot;) }</span>
+<span class="pc" id="L83">        val model = modelRepository.findById(request.modelId).orElseThrow { RuntimeException(&quot;Model not found&quot;) }</span>
 
-<span class="pc" id="L87">        val breed = breedRepository.findById(request.breedId).orElseThrow { RuntimeException(&quot;Breed not found&quot;) }</span>
+<span class="pc" id="L85">        val breed = breedRepository.findById(request.breedId).orElseThrow { RuntimeException(&quot;Breed not found&quot;) }</span>
 
-<span class="pc" id="L89">        val breedType = breedTypeRepository.findById(request.breedTypeId).orElseThrow { RuntimeException(&quot;Breed Type not found&quot;) }</span>
+<span class="pc" id="L87">        val breedType = breedTypeRepository.findById(request.breedTypeId).orElseThrow { RuntimeException(&quot;Breed Type not found&quot;) }</span>
 
-<span class="pc" id="L91">        val color = colorRepository.findById(request.colorId).orElseThrow { RuntimeException(&quot;Color not found&quot;) }</span>
+<span class="pc" id="L89">        val color = colorRepository.findById(request.colorId).orElseThrow { RuntimeException(&quot;Color not found&quot;) }</span>
 
-<span class="pc" id="L93">        val pattern = patternRepository.findById(request.patternId).orElseThrow { RuntimeException(&quot;Pattern not found&quot;) }</span>
+<span class="pc" id="L91">        val pattern = patternRepository.findById(request.patternId).orElseThrow { RuntimeException(&quot;Pattern not found&quot;) }</span>
 
-<span class="pc" id="L95">        val gender = genderRepository.findById(request.genderId).orElseThrow { RuntimeException(&quot;Gender not found&quot;) }</span>
+<span class="pc" id="L93">        val gender = genderRepository.findById(request.genderId).orElseThrow { RuntimeException(&quot;Gender not found&quot;) }</span>
 
-<span class="pc" id="L97">        val condition = conditionRepository.findById(request.conditionId).orElseThrow { RuntimeException(&quot;Condition not found&quot;) }</span>
+<span class="pc" id="L95">        val condition = conditionRepository.findById(request.conditionId).orElseThrow { RuntimeException(&quot;Condition not found&quot;) }</span>
 
-<span class="pc" id="L99">        val location = locationRepository.findById(request.locationId).orElseThrow { RuntimeException(&quot;Location not found&quot;) }</span>
+<span class="pc" id="L97">        val location = locationRepository.findById(request.locationId).orElseThrow { RuntimeException(&quot;Location not found&quot;) }</span>
 
-<span class="pc" id="L101">        val tracking = trackingRepository.findById(request.trackingId).orElseThrow { RuntimeException(&quot;Tracking not found&quot;) }</span>
-
-<span class="fc" id="L103">        return Horse(</span>
-<span class="fc" id="L104">            id = id,</span>
-<span class="fc" id="L105">            tagged = request.tagged,</span>
-<span class="fc" id="L106">            manufacturer = manufacturer,</span>
-<span class="fc" id="L107">            mold = mold,</span>
-<span class="fc" id="L108">            scale = scale,</span>
-<span class="fc" id="L109">            model = model,</span>
-<span class="fc" id="L110">            breed = breed,</span>
-<span class="fc" id="L111">            breedType = breedType,</span>
-<span class="fc" id="L112">            color = color,</span>
-<span class="fc" id="L113">            pattern = pattern,</span>
-<span class="fc" id="L114">            gender = gender,</span>
-<span class="fc" id="L115">            condition = condition,</span>
-<span class="fc" id="L116">            location = location,</span>
-<span class="fc" id="L117">            tracking = tracking,</span>
-<span class="fc" id="L118">            showName = request.showName,</span>
-<span class="fc" id="L119">            officePony = request.officePony,</span>
+<span class="fc" id="L99">        return Horse(</span>
+<span class="fc" id="L100">            id = id,</span>
+<span class="fc" id="L101">            tagged = request.tagged,</span>
+<span class="fc" id="L102">            manufacturer = manufacturer,</span>
+<span class="fc" id="L103">            mold = mold,</span>
+<span class="fc" id="L104">            scale = scale,</span>
+<span class="fc" id="L105">            model = model,</span>
+<span class="fc" id="L106">            breed = breed,</span>
+<span class="fc" id="L107">            breedType = breedType,</span>
+<span class="fc" id="L108">            color = color,</span>
+<span class="fc" id="L109">            pattern = pattern,</span>
+<span class="fc" id="L110">            gender = gender,</span>
+<span class="fc" id="L111">            condition = condition,</span>
+<span class="fc" id="L112">            location = location,</span>
+<span class="fc" id="L113">            purchasePrice = request.purchasePrice,</span>
+<span class="fc" id="L114">            sellPrice = request.sellPrice,</span>
+<span class="fc" id="L115">            nanQualified = request.nanQualified,</span>
+<span class="fc" id="L116">            firstPlace = request.firstPlace,</span>
+<span class="fc" id="L117">            secondPlace = request.secondPlace,</span>
+<span class="fc" id="L118">            thirdPlace = request.thirdPlace,</span>
+<span class="fc" id="L119">            fourthPlace = request.fourthPlace,</span>
+<span class="fc" id="L120">            fifthPlace = request.fifthPlace,</span>
+<span class="fc" id="L121">            showName = request.showName,</span>
+<span class="fc" id="L122">            officePony = request.officePony,</span>
         )
     }
 }

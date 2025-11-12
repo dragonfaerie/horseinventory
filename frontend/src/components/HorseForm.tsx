@@ -5,6 +5,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import { createHorse, getHorseById, updateHorse } from "../api/horseApi";
 import { Horse, HorseRequest } from "../types/Horse";
 
+type SelectField =
+  | "manufacturerId"
+  | "moldId"
+  | "scaleId"
+  | "modelId"
+  | "breedId"
+  | "breedTypeId"
+  | "colorId"
+  | "patternId"
+  | "genderId"
+  | "conditionId"
+  | "locationId";
+
+type PlacementField =
+  | "firstPlace"
+  | "secondPlace"
+  | "thirdPlace"
+  | "fourthPlace"
+  | "fifthPlace";
+
 type HorseFormData = {
   showName: string;
   tagged: boolean;
@@ -19,14 +39,16 @@ type HorseFormData = {
   genderId: number | "";
   conditionId: number | "";
   locationId: number | "";
-  trackingId: number | "";
+  purchasePrice: string;
+  sellPrice: string;
+  nanQualified: boolean;
+  firstPlace: string;
+  secondPlace: string;
+  thirdPlace: string;
+  fourthPlace: string;
+  fifthPlace: string;
   officePony: string;
 };
-
-type NumericField = Exclude<
-  keyof HorseFormData,
-  "showName" | "tagged" | "officePony"
->;
 
 type ReferenceEntity = {
   id: number;
@@ -35,7 +57,7 @@ type ReferenceEntity = {
 };
 
 type ReferenceField = {
-  key: NumericField;
+  key: SelectField;
   label: string;
   endpoint: string;
   optionLabel?: (item: ReferenceEntity) => string;
@@ -53,13 +75,14 @@ const REFERENCE_FIELDS: ReferenceField[] = [
   { key: "genderId", label: "Gender", endpoint: "/api/genders" },
   { key: "conditionId", label: "Condition", endpoint: "/api/conditions" },
   { key: "locationId", label: "Location", endpoint: "/api/locations" },
-  {
-    key: "trackingId",
-    label: "Tracking",
-    endpoint: "/api/tracking",
-    optionLabel: (item) =>
-      `Tracking #${item.id} · Purchase $${item.purchasePrice ?? 0}`,
-  },
+];
+
+const PLACEMENT_FIELDS: Array<{ key: PlacementField; label: string }> = [
+  { key: "firstPlace", label: "First Place" },
+  { key: "secondPlace", label: "Second Place" },
+  { key: "thirdPlace", label: "Third Place" },
+  { key: "fourthPlace", label: "Fourth Place" },
+  { key: "fifthPlace", label: "Fifth Place" },
 ];
 
 const EMPTY_FORM: HorseFormData = {
@@ -76,7 +99,14 @@ const EMPTY_FORM: HorseFormData = {
   genderId: "",
   conditionId: "",
   locationId: "",
-  trackingId: "",
+  purchasePrice: "",
+  sellPrice: "",
+  nanQualified: false,
+  firstPlace: "",
+  secondPlace: "",
+  thirdPlace: "",
+  fourthPlace: "",
+  fifthPlace: "",
   officePony: "",
 };
 
@@ -94,9 +124,24 @@ const horseToForm = (horse: Horse): HorseFormData => ({
   genderId: horse.gender.id,
   conditionId: horse.condition.id,
   locationId: horse.location.id,
-  trackingId: horse.tracking.id,
+  purchasePrice: horse.purchasePrice?.toString() ?? "",
+  sellPrice: horse.sellPrice?.toString() ?? "",
+  nanQualified: horse.nanQualified,
+  firstPlace: horse.firstPlace?.toString() ?? "",
+  secondPlace: horse.secondPlace?.toString() ?? "",
+  thirdPlace: horse.thirdPlace?.toString() ?? "",
+  fourthPlace: horse.fourthPlace?.toString() ?? "",
+  fifthPlace: horse.fifthPlace?.toString() ?? "",
   officePony: horse.officePony ?? "",
 });
+
+const inputClasses =
+  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+const numberInputClasses = `${inputClasses} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`;
+const primaryButtonClasses =
+  "inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 disabled:opacity-60";
+const secondaryButtonClasses =
+  "inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 disabled:opacity-60";
 
 const HorseForm: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
@@ -109,9 +154,9 @@ const HorseForm: React.FC = () => {
   const [loadingHorse, setLoadingHorse] = useState<boolean>(isEditMode);
   const [error, setError] = useState<string | null>(null);
   const [referenceData, setReferenceData] = useState<
-    Record<NumericField, ReferenceEntity[]>
+    Record<SelectField, ReferenceEntity[]>
   >(() => {
-    const empty = {} as Record<NumericField, ReferenceEntity[]>;
+    const empty = {} as Record<SelectField, ReferenceEntity[]>;
     REFERENCE_FIELDS.forEach((field) => {
       empty[field.key] = [];
     });
@@ -175,7 +220,7 @@ const HorseForm: React.FC = () => {
 
   const parseSelectValue = (v: string) => (v === "" ? "" : Number(v));
 
-  const getNumber = (key: NumericField): number => {
+  const getSelectNumber = (key: SelectField): number => {
     const value = form[key];
     if (typeof value === "number" && !Number.isNaN(value)) {
       return value;
@@ -185,20 +230,45 @@ const HorseForm: React.FC = () => {
     throw new Error(`Please provide a valid ${label.toLowerCase()}.`);
   };
 
+  const parseDecimalField = (value: string, label: string): number => {
+    if (!value.trim()) return 0;
+    const parsed = Number(value);
+    if (Number.isNaN(parsed)) {
+      throw new Error(`${label} must be a number.`);
+    }
+    return parsed;
+  };
+
+  const parseIntegerField = (value: string, label: string): number => {
+    if (!value.trim()) return 0;
+    const parsed = Number.parseInt(value, 10);
+    if (Number.isNaN(parsed)) {
+      throw new Error(`${label} must be a whole number.`);
+    }
+    return parsed;
+  };
+
   const buildPayload = (): HorseRequest => ({
     tagged: form.tagged,
-    manufacturerId: getNumber("manufacturerId"),
-    moldId: getNumber("moldId"),
-    scaleId: getNumber("scaleId"),
-    modelId: getNumber("modelId"),
-    breedId: getNumber("breedId"),
-    breedTypeId: getNumber("breedTypeId"),
-    colorId: getNumber("colorId"),
-    patternId: getNumber("patternId"),
-    genderId: getNumber("genderId"),
-    conditionId: getNumber("conditionId"),
-    locationId: getNumber("locationId"),
-    trackingId: getNumber("trackingId"),
+    manufacturerId: getSelectNumber("manufacturerId"),
+    moldId: getSelectNumber("moldId"),
+    scaleId: getSelectNumber("scaleId"),
+    modelId: getSelectNumber("modelId"),
+    breedId: getSelectNumber("breedId"),
+    breedTypeId: getSelectNumber("breedTypeId"),
+    colorId: getSelectNumber("colorId"),
+    patternId: getSelectNumber("patternId"),
+    genderId: getSelectNumber("genderId"),
+    conditionId: getSelectNumber("conditionId"),
+    locationId: getSelectNumber("locationId"),
+    purchasePrice: parseDecimalField(form.purchasePrice, "Purchase price"),
+    sellPrice: parseDecimalField(form.sellPrice, "Sell price"),
+    nanQualified: form.nanQualified,
+    firstPlace: parseIntegerField(form.firstPlace, "First place"),
+    secondPlace: parseIntegerField(form.secondPlace, "Second place"),
+    thirdPlace: parseIntegerField(form.thirdPlace, "Third place"),
+    fourthPlace: parseIntegerField(form.fourthPlace, "Fourth place"),
+    fifthPlace: parseIntegerField(form.fifthPlace, "Fifth place"),
     showName: form.showName.trim(),
     officePony: form.officePony ? form.officePony : null,
   });
@@ -239,14 +309,14 @@ const HorseForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-6 rounded-2xl shadow-lg bg-white p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold">
+    <div className="max-w-3xl mx-auto mt-6 rounded-3xl border border-blue-50 bg-white p-5 shadow-xl">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-2xl font-semibold text-slate-900">
           {isEditMode ? "Edit Horse" : "Add Horse"}
         </h2>
         <button
           type="button"
-          className="text-blue-600 hover:underline"
+          className="text-sm font-semibold text-blue-600 hover:text-blue-700"
           onClick={() => navigate("/horses")}
         >
           Back to list
@@ -263,9 +333,11 @@ const HorseForm: React.FC = () => {
           className="grid grid-cols-1 md:grid-cols-2 gap-3"
         >
           <div className="col-span-2">
-            <label className="block text-sm font-medium">Show Name</label>
+            <label className="block text-sm font-medium text-slate-700">
+              Show Name
+            </label>
             <input
-              className="mt-1 w-full rounded border p-2"
+              className={`${inputClasses} mt-1`}
               value={form.showName}
               onChange={(e) => upd("showName", e.target.value)}
               placeholder="Mr Sparkles"
@@ -273,9 +345,10 @@ const HorseForm: React.FC = () => {
             />
           </div>
 
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
             <input
               type="checkbox"
+              className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
               checked={form.tagged}
               onChange={(e) => upd("tagged", e.target.checked)}
             />
@@ -283,11 +356,11 @@ const HorseForm: React.FC = () => {
           </label>
 
           <div>
-            <label className="block text-sm font-medium">
+            <label className="block text-sm font-medium text-slate-700">
               Office Pony (MM/YYYY)
             </label>
             <input
-              className="mt-1 w-full rounded border p-2"
+              className={`${inputClasses} mt-1`}
               value={form.officePony}
               onChange={(e) => upd("officePony", e.target.value)}
               placeholder="09/2025"
@@ -296,9 +369,11 @@ const HorseForm: React.FC = () => {
 
           {REFERENCE_FIELDS.map(({ key, label, optionLabel }) => (
             <div key={key}>
-              <label className="block text-sm font-medium">{label}</label>
+              <label className="block text-sm font-medium text-slate-700">
+                {label}
+              </label>
               <select
-                className="mt-1 w-full rounded border p-2 bg-white"
+                className={`${inputClasses} mt-1 pr-8`}
                 value={form[key] === "" ? "" : String(form[key])}
                 onChange={(e) => upd(key, parseSelectValue(e.target.value))}
                 required
@@ -315,10 +390,72 @@ const HorseForm: React.FC = () => {
             </div>
           ))}
 
-          <div className="col-span-2 flex justify-end gap-2">
+          <div className="col-span-2 mt-2 rounded-2xl border border-slate-100 bg-slate-50/60 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h3 className="text-base font-semibold text-slate-900">
+                Purchase & Show Tracking
+              </h3>
+              <span className="text-xs font-semibold uppercase tracking-wide text-blue-600">
+                Per horse
+              </span>
+            </div>
+            <div className="mt-3 grid gap-3 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Purchase Price
+                </label>
+                <input
+                  type="number"
+                  className={`${numberInputClasses} mt-1`}
+                  placeholder="0.00"
+                  value={form.purchasePrice}
+                  onChange={(e) => upd("purchasePrice", e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Sell Price
+                </label>
+                <input
+                  type="number"
+                  className={`${numberInputClasses} mt-1`}
+                  placeholder="0.00"
+                  value={form.sellPrice}
+                  onChange={(e) => upd("sellPrice", e.target.value)}
+                />
+              </div>
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  checked={form.nanQualified}
+                  onChange={(e) => upd("nanQualified", e.target.checked)}
+                />
+                NAN Qualified
+              </label>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
+              {PLACEMENT_FIELDS.map(({ key, label }) => (
+                <div key={key}>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-slate-600">
+                    {label}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    className={`${numberInputClasses} mt-1`}
+                    value={form[key]}
+                    onChange={(e) => upd(key, e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="col-span-2 flex justify-end gap-3">
             <button
               type="button"
-              className="px-4 py-2 rounded border"
+              className={secondaryButtonClasses}
               onClick={() => navigate("/horses")}
               disabled={saving}
             >
@@ -327,7 +464,7 @@ const HorseForm: React.FC = () => {
             <button
               type="submit"
               disabled={saving}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+              className={primaryButtonClasses}
             >
               {saving
                 ? "Saving..."

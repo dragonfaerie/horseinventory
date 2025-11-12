@@ -8,6 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import java.math.BigDecimal
 
 @Entity
 @Table(name = "horses")
@@ -49,9 +50,22 @@ data class Horse(
     @ManyToOne
     @JoinColumn(name = "location", nullable = false)
     val location: Location,
-    @ManyToOne
-    @JoinColumn(name = "tracking", nullable = false)
-    val tracking: Tracking,
+    @Column(name = "purchase_price", precision = 10, scale = 2, nullable = false)
+    val purchasePrice: BigDecimal,
+    @Column(name = "sell_price", precision = 10, scale = 2, nullable = false)
+    val sellPrice: BigDecimal,
+    @Column(name = "nan_qualified", nullable = false)
+    val nanQualified: Boolean,
+    @Column(name = "first_place", nullable = false)
+    val firstPlace: Int,
+    @Column(name = "second_place", nullable = false)
+    val secondPlace: Int,
+    @Column(name = "third_place", nullable = false)
+    val thirdPlace: Int,
+    @Column(name = "fourth_place", nullable = false)
+    val fourthPlace: Int,
+    @Column(name = "fifth_place", nullable = false)
+    val fifthPlace: Int,
     @Column
     val showName: String,
     @Column
@@ -71,7 +85,14 @@ data class Horse(
         Gender(),
         Condition(),
         Location(),
-        Tracking(),
+        BigDecimal("0.00"),
+        BigDecimal("0.00"),
+        false,
+        0,
+        0,
+        0,
+        0,
+        0,
         "",
         "",
     )

@@ -37,11 +37,6 @@ const ADMIN_LINKS: AdminLink[] = [
   { title: "Patterns", description: "Manage pattern inspirations.", to: "/admin/patterns" },
   { title: "Run Types", description: "Track run types and editions.", to: "/admin/run-types" },
   { title: "Scales", description: "Define display scale options.", to: "/admin/scales" },
-  {
-    title: "Tracking",
-    description: "Reference purchase tracking records.",
-    to: "/admin/tracking",
-  },
 ];
 
 const AdminDashboard: React.FC = () => {

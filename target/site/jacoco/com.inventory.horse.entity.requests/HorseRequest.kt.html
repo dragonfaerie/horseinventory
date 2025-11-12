@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HorseRequest.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.inventory.horse.entity.requests</a> &gt; <span class="el_source">HorseRequest.kt</span></div><h1>HorseRequest.kt</h1><pre class="source lang-java linenums">package com.inventory.horse.entity.requests
 
-<span class="fc" id="L3">data class HorseRequest(</span>
-<span class="fc" id="L4">    val tagged: Boolean,</span>
-<span class="fc" id="L5">    val manufacturerId: Long,</span>
-<span class="fc" id="L6">    val moldId: Long,</span>
-<span class="fc" id="L7">    val scaleId: Long,</span>
-<span class="fc" id="L8">    val modelId: Long,</span>
-<span class="fc" id="L9">    val breedId: Long,</span>
-<span class="fc" id="L10">    val breedTypeId: Long,</span>
-<span class="fc" id="L11">    val colorId: Long,</span>
-<span class="fc" id="L12">    val patternId: Long,</span>
-<span class="fc" id="L13">    val genderId: Long,</span>
-<span class="fc" id="L14">    val conditionId: Long,</span>
-<span class="fc" id="L15">    val locationId: Long,</span>
-<span class="fc" id="L16">    val trackingId: Long,</span>
-<span class="fc" id="L17">    val showName: String,</span>
-<span class="fc" id="L18">    val officePony: String?,</span>
+import java.math.BigDecimal
+
+<span class="fc" id="L5">data class HorseRequest(</span>
+<span class="fc" id="L6">    val tagged: Boolean,</span>
+<span class="fc" id="L7">    val manufacturerId: Long,</span>
+<span class="fc" id="L8">    val moldId: Long,</span>
+<span class="fc" id="L9">    val scaleId: Long,</span>
+<span class="fc" id="L10">    val modelId: Long,</span>
+<span class="fc" id="L11">    val breedId: Long,</span>
+<span class="fc" id="L12">    val breedTypeId: Long,</span>
+<span class="fc" id="L13">    val colorId: Long,</span>
+<span class="fc" id="L14">    val patternId: Long,</span>
+<span class="fc" id="L15">    val genderId: Long,</span>
+<span class="fc" id="L16">    val conditionId: Long,</span>
+<span class="fc" id="L17">    val locationId: Long,</span>
+<span class="fc" id="L18">    val purchasePrice: BigDecimal,</span>
+<span class="fc" id="L19">    val sellPrice: BigDecimal,</span>
+<span class="fc" id="L20">    val nanQualified: Boolean,</span>
+<span class="fc" id="L21">    val firstPlace: Int,</span>
+<span class="fc" id="L22">    val secondPlace: Int,</span>
+<span class="fc" id="L23">    val thirdPlace: Int,</span>
+<span class="fc" id="L24">    val fourthPlace: Int,</span>
+<span class="fc" id="L25">    val fifthPlace: Int,</span>
+<span class="fc" id="L26">    val showName: String,</span>
+<span class="fc" id="L27">    val officePony: String?,</span>
 )
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
