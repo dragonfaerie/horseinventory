@@ -1,0 +1,81 @@
+CREATE TABLE IF NOT EXISTS manufacturers (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS molds (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    manufacturer_id INTEGER NOT NULL REFERENCES manufacturers(id)
+);
+
+CREATE TABLE IF NOT EXISTS run_types (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS finishes (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS scales (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS models (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    mold_id INTEGER NOT NULL REFERENCES molds(id),
+    run_type_id INTEGER NOT NULL REFERENCES run_types(id),
+    finish_id INTEGER NOT NULL REFERENCES finishes(id),
+    scale_id INTEGER NOT NULL REFERENCES scales(id)
+);
+
+CREATE TABLE IF NOT EXISTS breed_types (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS breeds (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS colors (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS patterns (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS genders (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS conditions (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS locations (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS tracking (
+    id SERIAL PRIMARY KEY,
+    purchase_price DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    sell_price DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    nan_qualified BOOLEAN NOT NULL DEFAULT FALSE,
+    first_place INT NOT NULL DEFAULT 0,
+    second_place INT NOT NULL DEFAULT 0,
+    third_place INT NOT NULL DEFAULT 0,
+    fourth_place INT NOT NULL DEFAULT 0,
+    fifth_place INT NOT NULL DEFAULT 0
+);
