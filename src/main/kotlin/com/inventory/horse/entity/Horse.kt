@@ -48,8 +48,11 @@ data class Horse(
     @JoinColumn(name = "condition_id", nullable = false)
     val condition: Condition,
     @ManyToOne
-    @JoinColumn(name = "location", nullable = false)
+    @JoinColumn(name = "location_id", nullable = false)
     val location: Location,
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    val owner: Profile,
     @Column(name = "purchase_price", precision = 10, scale = 2, nullable = false)
     val purchasePrice: BigDecimal,
     @Column(name = "sell_price", precision = 10, scale = 2, nullable = false)
@@ -85,6 +88,7 @@ data class Horse(
         Gender(),
         Condition(),
         Location(),
+        Profile(),
         BigDecimal("0.00"),
         BigDecimal("0.00"),
         false,

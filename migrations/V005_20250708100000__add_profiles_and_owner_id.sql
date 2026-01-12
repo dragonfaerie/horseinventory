@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS profiles (
+    id UUID PRIMARY KEY,
+    display_name TEXT,
+    role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('admin', 'user')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO profiles (id, display_name, role)
+VALUES ('00000000-0000-0000-0000-000000000000', 'Seed Admin', 'admin')
+ON CONFLICT (id) DO NOTHING;
+
+ALTER TABLE horses
+    ADD COLUMN owner_id UUID DEFAULT '00000000-0000-0000-0000-000000000000';
+
+UPDATE horses
+SET owner_id = '00000000-0000-0000-0000-000000000000'
+WHERE owner_id IS NULL;
+
+ALTER TABLE horses
+    ALTER COLUMN owner_id SET NOT NULL,
+    ALTER COLUMN owner_id DROP DEFAULT,
+    ADD CONSTRAINT horses_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES profiles(id) ON UPDATE CASCADE;

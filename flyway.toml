@@ -28,8 +28,7 @@ url = "jdbc:postgresql:horse_inventory"
 schemas = [ "horse_inventory" ]
 
 [environments.supabase]
-url = "postgresql://db.mrkqtgxdyyxkyiottzdg.supabase.co:5432/postgres"
+url = "jdbc:postgresql://db.mrkqtgxdyyxkyiottzdg.supabase.co:5432/postgres"
 user = "postgres"
-password = "yFMV^HJTjUo5ZKEU"
+password = "rbt6vAjAmX30xuuV"
 schemas = ["public"]
-

@@ -1,107 +1,152 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
-interface Mold {
+interface Lookup {
   id: number;
   name: string;
 }
-interface RunType {
-  id: number;
-  name: string;
-}
-interface Finish {
-  id: number;
-  name: string;
-}
-interface Scale {
-  id: number;
-  name: string;
-}
+
 interface Model {
   id: number;
   name: string;
-  mold: Mold;
-  runType: RunType;
-  finish: Finish;
-  scale: Scale;
+  mold: Lookup;
+  runType: Lookup;
+  finish: Lookup;
+  scale: Lookup;
 }
 
-export default function ManageModels() {
+const inputClasses =
+  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+const selectClasses = `${inputClasses} bg-slate-50`;
+const primaryButtonClasses =
+  "inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 disabled:opacity-60";
+const secondaryButtonClasses =
+  "inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 disabled:opacity-60";
+
+type SelectValue = number | "";
+
+const ManageModels: React.FC = () => {
   const [models, setModels] = useState<Model[]>([]);
-  const [molds, setMolds] = useState<Mold[]>([]);
-  const [runTypes, setRunTypes] = useState<RunType[]>([]);
-  const [finishes, setFinishes] = useState<Finish[]>([]);
-  const [scales, setScales] = useState<Scale[]>([]);
+  const [molds, setMolds] = useState<Lookup[]>([]);
+  const [runTypes, setRunTypes] = useState<Lookup[]>([]);
+  const [finishes, setFinishes] = useState<Lookup[]>([]);
+  const [scales, setScales] = useState<Lookup[]>([]);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [addName, setAddName] = useState("");
-  const [addMoldId, setAddMoldId] = useState<number | "">("");
-  const [addRunTypeId, setAddRunTypeId] = useState<number | "">("");
-  const [addFinishId, setAddFinishId] = useState<number | "">("");
-  const [addScaleId, setAddScaleId] = useState<number | "">("");
+  const [addMoldId, setAddMoldId] = useState<SelectValue>("");
+  const [addRunTypeId, setAddRunTypeId] = useState<SelectValue>("");
+  const [addFinishId, setAddFinishId] = useState<SelectValue>("");
+  const [addScaleId, setAddScaleId] = useState<SelectValue>("");
 
   const [editId, setEditId] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
-  const [editMoldId, setEditMoldId] = useState<number | "">("");
-  const [editRunTypeId, setEditRunTypeId] = useState<number | "">("");
-  const [editFinishId, setEditFinishId] = useState<number | "">("");
-  const [editScaleId, setEditScaleId] = useState<number | "">("");
+  const [editMoldId, setEditMoldId] = useState<SelectValue>("");
+  const [editRunTypeId, setEditRunTypeId] = useState<SelectValue>("");
+  const [editFinishId, setEditFinishId] = useState<SelectValue>("");
+  const [editScaleId, setEditScaleId] = useState<SelectValue>("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      const [modelRes, moldRes, runRes, finishRes, scaleRes] =
-        await Promise.all([
-          axios.get("/api/models"),
-          axios.get("/api/molds"),
-          axios.get("/api/run-types"),
-          axios.get("/api/finishes"),
-          axios.get("/api/scales"),
-        ]);
-      setModels(modelRes.data);
-      setMolds(moldRes.data);
-      setRunTypes(runRes.data);
-      setFinishes(finishRes.data);
-      setScales(scaleRes.data);
+    const fetchAll = async () => {
+      try {
+        const [modelRes, moldRes, runRes, finishRes, scaleRes] =
+          await Promise.all([
+            axios.get<Model[]>("/api/models"),
+            axios.get<Lookup[]>("/api/molds"),
+            axios.get<Lookup[]>("/api/run-types"),
+            axios.get<Lookup[]>("/api/finishes"),
+            axios.get<Lookup[]>("/api/scales"),
+          ]);
+        setModels(modelRes.data);
+        setMolds(moldRes.data);
+        setRunTypes(runRes.data);
+        setFinishes(finishRes.data);
+        setScales(scaleRes.data);
+      } catch {
+        setError("Unable to load models or supporting lookups.");
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchData();
+
+    fetchAll();
   }, []);
+
+  const lookupLists = useMemo(
+    () => [
+      { label: "Mold", value: addMoldId, setter: setAddMoldId, data: molds },
+      {
+        label: "Run type",
+        value: addRunTypeId,
+        setter: setAddRunTypeId,
+        data: runTypes,
+      },
+      {
+        label: "Finish",
+        value: addFinishId,
+        setter: setAddFinishId,
+        data: finishes,
+      },
+      { label: "Scale", value: addScaleId, setter: setAddScaleId, data: scales },
+    ],
+    [addFinishId, addMoldId, addRunTypeId, addScaleId, finishes, molds, runTypes, scales],
+  );
+
+  const resetAddForm = () => {
+    setAddName("");
+    setAddMoldId("");
+    setAddRunTypeId("");
+    setAddFinishId("");
+    setAddScaleId("");
+  };
+
+  const resetEditForm = () => {
+    setEditId(null);
+    setEditName("");
+    setEditMoldId("");
+    setEditRunTypeId("");
+    setEditFinishId("");
+    setEditScaleId("");
+  };
 
   const renderSelect = (
     label: string,
-    value: number | "",
-    onChange: (val: number | "") => void,
-    options: { id: number; name: string }[],
+    value: SelectValue,
+    setter: (value: SelectValue) => void,
+    options: Lookup[],
   ) => (
-    <>
-      <label>{label}</label>
+    <label className="block text-sm font-medium text-slate-700">
+      <span>{label}</span>
       <select
         value={value}
-        onChange={(e) =>
-          onChange(e.target.value === "" ? "" : Number(e.target.value))
-        }
+        onChange={(e) => setter(e.target.value ? Number(e.target.value) : "")}
+        className={`${selectClasses} mt-1`}
       >
-        <option value="">Select {label}</option>
-        {options.map((opt) => (
-          <option key={opt.id} value={opt.id}>
-            {opt.name}
+        <option value="">Select {label.toLowerCase()}</option>
+        {options.map((option) => (
+          <option key={option.id} value={option.id}>
+            {option.name}
           </option>
         ))}
       </select>
-    </>
+    </label>
   );
 
   const handleAdd = async () => {
     if (
-      !addName ||
-      !addMoldId ||
-      !addRunTypeId ||
-      !addFinishId ||
-      !addScaleId
+      !addName.trim() ||
+      addMoldId === "" ||
+      addRunTypeId === "" ||
+      addFinishId === "" ||
+      addScaleId === ""
     ) {
-      alert("Please fill out all fields.");
+      setError("Please fill in every field before adding a model.");
       return;
     }
 
-    console.log(typeof addMoldId, addMoldId);
     try {
       await axios.post<Model>("/api/models", {
         name: addName.trim(),
@@ -110,15 +155,12 @@ export default function ManageModels() {
         finishId: addFinishId,
         scaleId: addScaleId,
       });
-      const updated = await axios.get<Model[]>("/api/models");
-      setModels(updated.data);
-      setAddName("");
-      setAddMoldId("");
-      setAddRunTypeId("");
-      setAddFinishId("");
-      setAddScaleId("");
-    } catch (e) {
-      alert("Error adding model");
+      const refreshed = await axios.get<Model[]>("/api/models");
+      setModels(refreshed.data);
+      resetAddForm();
+      setError(null);
+    } catch {
+      setError("Unable to add model.");
     }
   };
 
@@ -131,25 +173,16 @@ export default function ManageModels() {
     setEditScaleId(model.scale.id);
   };
 
-  const cancelEdit = () => {
-    setEditId(null);
-    setEditName("");
-    setEditMoldId("");
-    setEditRunTypeId("");
-    setEditFinishId("");
-    setEditScaleId("");
-  };
-
   const handleUpdate = async () => {
     if (
       !editId ||
-      !editName ||
-      !editMoldId ||
-      !editRunTypeId ||
-      !editFinishId ||
-      !editScaleId
+      !editName.trim() ||
+      editMoldId === "" ||
+      editRunTypeId === "" ||
+      editFinishId === "" ||
+      editScaleId === ""
     ) {
-      alert("Please fill out all fields.");
+      setError("Please complete every edit field before saving.");
       return;
     }
 
@@ -161,84 +194,168 @@ export default function ManageModels() {
         finish: { id: editFinishId },
         scale: { id: editScaleId },
       });
-
-      setModels(models.map((m) => (m.id === editId ? res.data : m)));
-      cancelEdit();
-    } catch (e) {
-      alert("Error updating model");
+      setModels((prev) => prev.map((m) => (m.id === editId ? res.data : m)));
+      resetEditForm();
+      setError(null);
+    } catch {
+      setError("Unable to update model.");
     }
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-2">Add New Model</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-        <input
-          type="text"
-          placeholder="Model Name"
-          value={addName}
-          onChange={(e) => setAddName(e.target.value)}
-        />
-        {renderSelect("Mold", addMoldId, setAddMoldId, molds)}
-        {renderSelect("Run Type", addRunTypeId, setAddRunTypeId, runTypes)}
-        {renderSelect("Finish", addFinishId, setAddFinishId, finishes)}
-        {renderSelect("Scale", addScaleId, setAddScaleId, scales)}
-      </div>
-      <button
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-        onClick={handleAdd}
-      >
-        Add Model
-      </button>
+    <div className="mx-auto mt-6 max-w-5xl px-4">
+      <div className="rounded-3xl border border-blue-50 bg-white shadow-xl">
+        <div className="border-b border-blue-50 px-6 py-5">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
+                Admin Form
+              </p>
+              <h2 className="text-2xl font-semibold text-slate-900">
+                Manage Models
+              </h2>
+              <p className="mt-1 text-sm text-slate-600">
+                Combine mold, finish, scale, and run type into named catalog
+                entries for the rest of the app to use.
+              </p>
+            </div>
+            <Link to="/admin" className={`${secondaryButtonClasses} whitespace-nowrap`}>
+              ← Back to Admin
+            </Link>
+          </div>
+        </div>
 
-      <h2 className="text-xl font-bold mt-6 mb-2">Existing Models</h2>
-      {models.map((model) =>
-        editId === model.id ? (
-          <div key={model.id} className="border p-2 mb-2 bg-yellow-100">
-            <input
-              type="text"
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-            />
-            {renderSelect("Mold", editMoldId, setEditMoldId, molds)}
-            {renderSelect(
-              "Run Type",
-              editRunTypeId,
-              setEditRunTypeId,
-              runTypes,
+        <div className="px-6 py-6">
+          {error && (
+            <div className="mb-4 rounded-2xl border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          <section>
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-slate-900">
+                Existing models
+              </h3>
+              {loading && (
+                <span className="text-sm text-slate-500">Loading…</span>
+              )}
+            </div>
+            {models.length === 0 && !loading ? (
+              <p className="mt-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-500">
+                No models configured yet. Use the form below to add one.
+              </p>
+            ) : (
+              <ul className="mt-4 space-y-3">
+                {models.map((model) => (
+                  <li
+                    key={model.id}
+                    className="rounded-2xl border border-slate-100 bg-slate-50/70 px-4 py-3 shadow-sm"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="text-base font-semibold text-slate-900">
+                          {model.name}
+                        </p>
+                        <p className="text-sm text-slate-600">
+                          {model.mold.name} · {model.finish.name} ·{" "}
+                          {model.scale.name} · {model.runType.name}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => startEdit(model)}
+                        className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             )}
-            {renderSelect("Finish", editFinishId, setEditFinishId, finishes)}
-            {renderSelect("Scale", editScaleId, setEditScaleId, scales)}
-            <div className="mt-2">
-              <button
-                className="bg-green-600 text-white px-2 py-1 mr-2"
-                onClick={handleUpdate}
-              >
-                Save
-              </button>
-              <button
-                className="bg-gray-400 text-white px-2 py-1"
-                onClick={cancelEdit}
-              >
-                Cancel
-              </button>
+          </section>
+
+          <section className="mt-8 grid gap-6 md:grid-cols-2">
+            <div className="rounded-2xl border border-slate-100 bg-blue-50/40 p-5 shadow-sm">
+              <h3 className="text-base font-semibold text-slate-900">
+                Add model
+              </h3>
+              <div className="mt-3 space-y-3">
+                <input
+                  type="text"
+                  placeholder="Model name"
+                  value={addName}
+                  onChange={(e) => setAddName(e.target.value)}
+                  className={inputClasses}
+                />
+                {lookupLists.map(({ label, value, setter, data }) =>
+                  renderSelect(label, value, setter, data),
+                )}
+                <button
+                  type="button"
+                  onClick={handleAdd}
+                  className={`${primaryButtonClasses} w-full`}
+                >
+                  Add model
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div key={model.id} className="border p-2 mb-2">
-            <strong>{model.name}</strong> — {model.mold.name},{" "}
-            {model.finish.name}, {model.scale.name}, {model.runType.name}
-            <div className="mt-1">
-              <button
-                className="bg-blue-500 text-white px-2 py-1"
-                onClick={() => startEdit(model)}
-              >
-                Edit
-              </button>
+
+            <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+              <h3 className="text-base font-semibold text-slate-900">
+                Edit model
+              </h3>
+              {editId ? (
+                <>
+                  <p className="mt-1 text-sm text-slate-600">
+                    Editing <span className="font-semibold">{editName}</span>
+                  </p>
+                  <div className="mt-3 space-y-3">
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className={inputClasses}
+                    />
+                    {renderSelect("Mold", editMoldId, setEditMoldId, molds)}
+                    {renderSelect(
+                      "Run type",
+                      editRunTypeId,
+                      setEditRunTypeId,
+                      runTypes,
+                    )}
+                    {renderSelect("Finish", editFinishId, setEditFinishId, finishes)}
+                    {renderSelect("Scale", editScaleId, setEditScaleId, scales)}
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={handleUpdate}
+                        className={primaryButtonClasses}
+                      >
+                        Save changes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={resetEditForm}
+                        className={secondaryButtonClasses}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <p className="mt-2 rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-500">
+                  Select a model above to populate this form.
+                </p>
+              )}
             </div>
-          </div>
-        ),
-      )}
+          </section>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default ManageModels;

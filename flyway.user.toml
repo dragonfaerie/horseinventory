@@ -1,0 +1,3 @@
+[environments.hinv]
+user = "kit"
+password = "${localSecret.Flyway Desktop 5e1e984c-4088-4796-af4e-bcc4f72ed713}"

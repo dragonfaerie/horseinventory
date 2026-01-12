@@ -12,6 +12,7 @@ import com.inventory.horse.entity.Manufacturer
 import com.inventory.horse.entity.Model
 import com.inventory.horse.entity.Mold
 import com.inventory.horse.entity.Pattern
+import com.inventory.horse.entity.Profile
 import com.inventory.horse.entity.RunType
 import com.inventory.horse.entity.Scale
 import com.inventory.horse.entity.requests.HorseRequest
@@ -26,7 +27,9 @@ import com.inventory.horse.repository.ManufacturerRepository
 import com.inventory.horse.repository.ModelRepository
 import com.inventory.horse.repository.MoldRepository
 import com.inventory.horse.repository.PatternRepository
+import com.inventory.horse.repository.ProfileRepository
 import com.inventory.horse.repository.ScaleRepository
+import com.inventory.horse.security.SupabasePrincipal
 import io.mockk.MockKAnnotations
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -43,6 +46,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpStatus
 import java.math.BigDecimal
 import java.util.Optional
+import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 class HorseControllerTest {
@@ -82,6 +86,9 @@ class HorseControllerTest {
     @MockK
     lateinit var locationRepository: LocationRepository
 
+    @MockK
+    lateinit var profileRepository: ProfileRepository
+
     private lateinit var controller: HorseController
 
     @BeforeEach
@@ -101,52 +108,58 @@ class HorseControllerTest {
                 genderRepository = genderRepository,
                 conditionRepository = conditionRepository,
                 locationRepository = locationRepository,
+                profileRepository = profileRepository,
             )
     }
 
     @Test
     fun `getAll returns repository payload`() {
         val horse = referenceData().toHorse(id = 7)
-        every { horseRepository.findAll() } returns listOf(horse)
+        val principal = principal()
+        every { horseRepository.findAllByOwnerId(principal.id) } returns listOf(horse)
 
-        val result = controller.getAll()
+        val result = controller.getAll(principal)
 
         assertEquals(listOf(horse), result)
-        verify(exactly = 1) { horseRepository.findAll() }
+        verify(exactly = 1) { horseRepository.findAllByOwnerId(principal.id) }
     }
 
     @Test
     fun `getOne returns entity when present`() {
         val horse = referenceData().toHorse(id = 9)
-        every { horseRepository.findById(9) } returns Optional.of(horse)
+        val principal = principal()
+        every { horseRepository.findByIdAndOwnerId(9, principal.id) } returns Optional.of(horse)
 
-        val response = controller.getOne(9)
+        val response = controller.getOne(9, principal)
 
         assertEquals(HttpStatus.OK, response.statusCode)
         assertEquals(horse, response.body)
-        verify { horseRepository.findById(9) }
+        verify { horseRepository.findByIdAndOwnerId(9, principal.id) }
     }
 
     @Test
     fun `getOne returns 404 when entity missing`() {
-        every { horseRepository.findById(5) } returns Optional.empty()
+        val principal = principal()
+        every { horseRepository.findByIdAndOwnerId(5, principal.id) } returns Optional.empty()
 
-        val response = controller.getOne(5)
+        val response = controller.getOne(5, principal)
 
         assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
         assertNull(response.body)
-        verify { horseRepository.findById(5) }
+        verify { horseRepository.findByIdAndOwnerId(5, principal.id) }
     }
 
     @Test
     fun `createHorse builds entity from request and saves it`() {
         val refs = referenceData()
         stubReferenceLookups(refs)
+        val principal = principal()
+        every { profileRepository.getReferenceById(principal.id) } returns refs.owner
 
         val slot = slot<Horse>()
         every { horseRepository.save(capture(slot)) } answers { slot.captured.copy(id = 42) }
 
-        val response = controller.createHorse(refs.toRequest())
+        val response = controller.createHorse(refs.toRequest(), principal)
 
         assertEquals(HttpStatus.OK, response.statusCode)
         assertEquals(42, response.body?.id)
@@ -158,12 +171,13 @@ class HorseControllerTest {
     @Test
     fun `update returns 404 when target horse is missing`() {
         val refs = referenceData()
-        every { horseRepository.existsById(99) } returns false
+        val principal = principal()
+        every { horseRepository.existsByIdAndOwnerId(99, principal.id) } returns false
 
-        val response = controller.update(99, refs.toRequest(tagged = false))
+        val response = controller.update(99, refs.toRequest(tagged = false), principal)
 
         assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        verify { horseRepository.existsById(99) }
+        verify { horseRepository.existsByIdAndOwnerId(99, principal.id) }
         verify(exactly = 0) { horseRepository.save(any()) }
     }
 
@@ -171,18 +185,20 @@ class HorseControllerTest {
     fun `update builds entity with provided id`() {
         val refs = referenceData()
         stubReferenceLookups(refs)
-        every { horseRepository.existsById(88) } returns true
+        val principal = principal()
+        every { horseRepository.existsByIdAndOwnerId(88, principal.id) } returns true
+        every { profileRepository.getReferenceById(principal.id) } returns refs.owner
         val slot = slot<Horse>()
         every { horseRepository.save(capture(slot)) } answers { slot.captured }
 
-        val response = controller.update(88, refs.toRequest(tagged = false))
+        val response = controller.update(88, refs.toRequest(tagged = false), principal)
 
         assertEquals(HttpStatus.OK, response.statusCode)
         val saved = slot.captured
         assertEquals(88, saved.id)
         assertFalse(saved.tagged)
         assertEquals(refs.toHorse(id = 88, tagged = false), saved)
-        verify { horseRepository.existsById(88) }
+        verify { horseRepository.existsByIdAndOwnerId(88, principal.id) }
         verify { horseRepository.save(any()) }
     }
 
@@ -202,7 +218,17 @@ class HorseControllerTest {
 
     private fun referenceData(): ReferenceData = ReferenceData()
 
-    private class ReferenceData {
+    private fun principal(): SupabasePrincipal =
+        SupabasePrincipal(
+            id = OWNER_ID,
+            email = "kit@example.com",
+            displayName = "Kit",
+            role = "user",
+        )
+
+    private class ReferenceData(
+        val owner: Profile = Profile(id = OWNER_ID, displayName = "Kit", role = "user"),
+    ) {
         val manufacturer = Manufacturer(id = 1, name = "Breyer")
         val scale = Scale(id = 2, name = "Traditional")
         val runType = RunType(id = 3, name = "LE")
@@ -271,6 +297,7 @@ class HorseControllerTest {
                 gender = gender,
                 condition = condition,
                 location = location,
+                owner = owner,
                 purchasePrice = purchasePrice,
                 sellPrice = sellPrice,
                 nanQualified = false,
@@ -284,3 +311,5 @@ class HorseControllerTest {
             )
     }
 }
+
+private val OWNER_ID: UUID = UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")

@@ -1,6 +1,7 @@
 package com.inventory.horse.controller
 
 import com.inventory.horse.entity.Horse
+import com.inventory.horse.entity.Profile
 import com.inventory.horse.entity.requests.HorseRequest
 import com.inventory.horse.repository.BreedRepository
 import com.inventory.horse.repository.BreedTypeRepository
@@ -13,8 +14,11 @@ import com.inventory.horse.repository.ManufacturerRepository
 import com.inventory.horse.repository.ModelRepository
 import com.inventory.horse.repository.MoldRepository
 import com.inventory.horse.repository.PatternRepository
+import com.inventory.horse.repository.ProfileRepository
 import com.inventory.horse.repository.ScaleRepository
+import com.inventory.horse.security.SupabasePrincipal
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -38,37 +42,48 @@ class HorseController(
     private val genderRepository: GenderRepository,
     private val conditionRepository: ConditionRepository,
     private val locationRepository: LocationRepository,
+    private val profileRepository: ProfileRepository,
 ) {
     @GetMapping
-    fun getAll(): List<Horse> = repo.findAll()
+    fun getAll(
+        @AuthenticationPrincipal principal: SupabasePrincipal,
+    ): List<Horse> = repo.findAllByOwnerId(principal.id)
 
     @GetMapping("/{id}")
     fun getOne(
         @PathVariable id: Long,
+        @AuthenticationPrincipal principal: SupabasePrincipal,
     ): ResponseEntity<Horse> =
         repo
-            .findById(id)
+            .findByIdAndOwnerId(id, principal.id)
             .map { ResponseEntity.ok(it) }
             .orElse(ResponseEntity.notFound().build())
 
     @PostMapping
     fun createHorse(
         @RequestBody request: HorseRequest,
-    ): ResponseEntity<Horse> = ResponseEntity.ok(repo.save(toHorse(request)))
+        @AuthenticationPrincipal principal: SupabasePrincipal,
+    ): ResponseEntity<Horse> {
+        val owner = profileRepository.getReferenceById(principal.id)
+        return ResponseEntity.ok(repo.save(toHorse(request, owner = owner)))
+    }
 
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
         @RequestBody request: HorseRequest,
+        @AuthenticationPrincipal principal: SupabasePrincipal,
     ): ResponseEntity<Horse> =
-        if (!repo.existsById(id)) {
+        if (!repo.existsByIdAndOwnerId(id, principal.id)) {
             ResponseEntity.notFound().build()
         } else {
-            ResponseEntity.ok(repo.save(toHorse(request, id)))
+            val owner = profileRepository.getReferenceById(principal.id)
+            ResponseEntity.ok(repo.save(toHorse(request, owner = owner, id = id)))
         }
 
     private fun toHorse(
         request: HorseRequest,
+        owner: Profile,
         id: Long = 0,
     ): Horse {
         val manufacturer =
@@ -110,6 +125,7 @@ class HorseController(
             gender = gender,
             condition = condition,
             location = location,
+            owner = owner,
             purchasePrice = request.purchasePrice,
             sellPrice = request.sellPrice,
             nanQualified = request.nanQualified,

@@ -1,0 +1,14 @@
+target/
+build/
+out/
+.DS_Store
+*.class
+*.jar
+*.war
+*.log
+.idea/
+*.iml
+node_modules/
+dist/
+frontend/build/
+.env
