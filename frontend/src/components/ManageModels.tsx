@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../api/httpClient";
 
 interface Lookup {
   id: number;
@@ -54,11 +54,11 @@ const ManageModels: React.FC = () => {
       try {
         const [modelRes, moldRes, runRes, finishRes, scaleRes] =
           await Promise.all([
-            axios.get<Model[]>("/api/models"),
-            axios.get<Lookup[]>("/api/molds"),
-            axios.get<Lookup[]>("/api/run-types"),
-            axios.get<Lookup[]>("/api/finishes"),
-            axios.get<Lookup[]>("/api/scales"),
+            apiClient.get<Model[]>("/api/models"),
+            apiClient.get<Lookup[]>("/api/molds"),
+            apiClient.get<Lookup[]>("/api/run-types"),
+            apiClient.get<Lookup[]>("/api/finishes"),
+            apiClient.get<Lookup[]>("/api/scales"),
           ]);
         setModels(modelRes.data);
         setMolds(moldRes.data);
@@ -148,14 +148,14 @@ const ManageModels: React.FC = () => {
     }
 
     try {
-      await axios.post<Model>("/api/models", {
+      await apiClient.post<Model>("/api/models", {
         name: addName.trim(),
         moldId: addMoldId,
         runTypeId: addRunTypeId,
         finishId: addFinishId,
         scaleId: addScaleId,
       });
-      const refreshed = await axios.get<Model[]>("/api/models");
+      const refreshed = await apiClient.get<Model[]>("/api/models");
       setModels(refreshed.data);
       resetAddForm();
       setError(null);
@@ -187,7 +187,7 @@ const ManageModels: React.FC = () => {
     }
 
     try {
-      const res = await axios.put<Model>(`/api/models/${editId}`, {
+      const res = await apiClient.put<Model>(`/api/models/${editId}`, {
         name: editName.trim(),
         mold: { id: editMoldId },
         runType: { id: editRunTypeId },

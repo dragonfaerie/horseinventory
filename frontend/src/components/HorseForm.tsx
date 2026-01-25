@@ -1,9 +1,9 @@
 // src/components/HorseForm.tsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { createHorse, getHorseById, updateHorse } from "../api/horseApi";
 import { Horse, HorseRequest } from "../types/Horse";
+import apiClient from "../api/httpClient";
 
 type SelectField =
   | "manufacturerId"
@@ -187,7 +187,7 @@ const HorseForm: React.FC = () => {
     setReferenceLoading(true);
     Promise.all(
       REFERENCE_FIELDS.map(async ({ key, endpoint }) => {
-        const response = await axios.get<ReferenceEntity[]>(endpoint);
+        const response = await apiClient.get<ReferenceEntity[]>(endpoint);
         return [key, response.data] as const;
       }),
     )

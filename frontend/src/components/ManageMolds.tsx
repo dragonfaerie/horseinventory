@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../api/httpClient";
 
 interface Manufacturer {
   id: number;
@@ -39,8 +39,8 @@ const ManageMolds: React.FC = () => {
     const fetchAll = async () => {
       try {
         const [moldRes, manufacturerRes] = await Promise.all([
-          axios.get<Mold[]>("/api/molds"),
-          axios.get<Manufacturer[]>("/api/manufacturers"),
+          apiClient.get<Mold[]>("/api/molds"),
+          apiClient.get<Manufacturer[]>("/api/manufacturers"),
         ]);
         setMolds(moldRes.data);
         setManufacturers(manufacturerRes.data);
@@ -75,7 +75,7 @@ const ManageMolds: React.FC = () => {
     }
 
     try {
-      const res = await axios.post<Mold>("/api/molds", {
+      const res = await apiClient.post<Mold>("/api/molds", {
         name: addName.trim(),
         manufacturerId: addManufacturerId,
       });
@@ -105,7 +105,7 @@ const ManageMolds: React.FC = () => {
     }
 
     try {
-      const res = await axios.put<Mold>(`/api/molds/${selected.id}`, {
+      const res = await apiClient.put<Mold>(`/api/molds/${selected.id}`, {
         name: editName.trim(),
         manufacturerId: editManufacturerId,
       });

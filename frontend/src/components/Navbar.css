@@ -5,6 +5,7 @@
   background-color: #333;
   color: white;
   padding: 10px 20px;
+  gap: 12px;
 }
 
 .logo {
@@ -19,4 +20,39 @@
 
 .nav-links a:hover {
   text-decoration: underline;
+}
+
+.nav-login {
+  color: white;
+  margin-left: auto;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-login:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.nav-session {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.nav-session button {
+  background-color: #dc2626;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.nav-session button:hover {
+  background-color: #b91c1c;
 }

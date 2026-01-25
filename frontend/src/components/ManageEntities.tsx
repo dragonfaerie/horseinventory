@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../api/httpClient";
 
 interface Entity {
   id: number;
@@ -32,25 +32,25 @@ export function ManageEntities<T extends Entity>({
   const [addName, setAddName] = useState("");
   const [editName, setEditName] = useState("");
 
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     try {
-      const res = await axios.get<T[]>(endpoint);
+      const res = await apiClient.get<T[]>(endpoint);
       setItems(res.data);
     } catch (err) {
       setError(`Failed to fetch from ${endpoint}`);
     } finally {
       setLoading(false);
     }
-  };
+  }, [endpoint]);
 
   useEffect(() => {
     fetchItems();
-  }, [endpoint]);
+  }, [fetchItems]);
 
   const handleAdd = async () => {
     if (!addName.trim()) return;
     try {
-      const res = await axios.post<T>(endpoint, { name: addName.trim() });
+      const res = await apiClient.post<T>(endpoint, { name: addName.trim() });
       setItems([...items, res.data]);
       setAddName("");
     } catch {
@@ -66,7 +66,7 @@ export function ManageEntities<T extends Entity>({
   const handleUpdate = async () => {
     if (!selected) return;
     try {
-      const res = await axios.put<T>(`${endpoint}/${selected.id}`, {
+      const res = await apiClient.put<T>(`${endpoint}/${selected.id}`, {
         ...selected,
         name: editName.trim(),
       });

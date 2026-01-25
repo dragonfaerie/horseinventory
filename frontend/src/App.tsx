@@ -17,7 +17,8 @@ import ManageRunTypes from "./components/ManageRunTypes";
 import ManageScales from "./components/ManageScales";
 import ManageModels from "./components/ManageModels";
 import HorseForm from "./components/HorseForm";
-import Horselist from "./components/Horselist";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LoginForm from "./components/LoginForm";
 
 const Home: React.FC = () => (
   <div>
@@ -33,27 +34,143 @@ function App() {
       <div style={{ padding: "20px" }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/horses" element={<HorseList />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/breeds" element={<ManageBreeds />} />
-          <Route path="/admin/breed-types" element={<ManageBreedTypes />} />
-          <Route path="/admin/colors" element={<ManageColors />} />
-          <Route path="/admin/conditions" element={<ManageCondition />} />
-          <Route path="/admin/finish" element={<ManageFinish />} />
-          <Route path="/admin/gender" element={<ManageGenders />} />
-          <Route path="/admin/locations" element={<ManageLocations />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route
+            path="/horses"
+            element={
+              <ProtectedRoute>
+                <HorseList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/horses/new"
+            element={
+              <ProtectedRoute>
+                <HorseForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/horses/:id/edit"
+            element={
+              <ProtectedRoute>
+                <HorseForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/breeds"
+            element={
+              <ProtectedRoute>
+                <ManageBreeds />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/breed-types"
+            element={
+              <ProtectedRoute>
+                <ManageBreedTypes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/colors"
+            element={
+              <ProtectedRoute>
+                <ManageColors />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/conditions"
+            element={
+              <ProtectedRoute>
+                <ManageCondition />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/finish"
+            element={
+              <ProtectedRoute>
+                <ManageFinish />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/gender"
+            element={
+              <ProtectedRoute>
+                <ManageGenders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/locations"
+            element={
+              <ProtectedRoute>
+                <ManageLocations />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin/manufacturers"
-            element={<ManageManufacturers />}
+            element={
+              <ProtectedRoute>
+                <ManageManufacturers />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/admin/models" element={<ManageModels />} />
-          <Route path="/admin/molds" element={<ManageMolds />} />
-          <Route path="/admin/patterns" element={<ManagePatterns />} />
-          <Route path="/admin/run-types" element={<ManageRunTypes />} />
-          <Route path="/admin/scales" element={<ManageScales />} />
-          <Route path="/horses" element={<HorseList />} />
-          <Route path="/horses/new" element={<HorseForm />} />
-          <Route path="/horses/:id/edit" element={<HorseForm />} />
+          <Route
+            path="/admin/models"
+            element={
+              <ProtectedRoute>
+                <ManageModels />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/molds"
+            element={
+              <ProtectedRoute>
+                <ManageMolds />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/patterns"
+            element={
+              <ProtectedRoute>
+                <ManagePatterns />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/run-types"
+            element={
+              <ProtectedRoute>
+                <ManageRunTypes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/scales"
+            element={
+              <ProtectedRoute>
+                <ManageScales />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </Router>
